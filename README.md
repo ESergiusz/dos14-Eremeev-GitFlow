@@ -1,4 +1,4 @@
-# TMS. Howework. Gitflow.
+# TMS. Homework. Gitflow.
 ## Homework 14
 1. Создать новый репозиторий dos14-family-name-git-flow.
 2. Создать 2 ветки master develop.
