@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # TMS. Homework. Gitflow.
 ## Homework 15
 1. Установить python 3.11 через pyenv
@@ -7,3 +8,5 @@
 5. Сделать black ./
 5. Закоммитить все файлы (pyptoject.toml, poetry.lock, main.py etc) в feature ветку, слить ее с develop(без апрува)
 6. По готовности сделать пулл реквест в master с апрувером @ggramal, отписаться в тг канале
+=======
+>>>>>>> feature-hw-15
