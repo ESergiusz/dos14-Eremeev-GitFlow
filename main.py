@@ -1,14 +1,165 @@
-# Подгружаем нужные библиотеки, для работы скрипта.
-import csv
-import yaml
 import json
-from datetime import datetime
+import yaml
 
-# Объявляем пустые list-ы, которые понадобятся для работы скрипта.
-final_list = []
-list_csv = []
-list_yaml = []
-temp = []
+class Permissions:
+    def __init__(self, create=False, read=False, update=False, delete=False):
+        self._create = create
+        self._read = read
+        self._update = update
+        self._delete = delete
+
+    def to_dict(self):
+        return {
+            'create': self._create,
+            'read': self._read,
+            'update': self._update,
+            'delete': self._delete,
+        }
+    @property
+    def create(self):
+        return self._create
+
+    @property
+    def read(self):
+        return self._read
+
+    @property
+    def update(self):
+        return self._update
+
+    @property
+    def delete(self):
+        return self._delete
+
+
+class Role:
+    def __init__(self, name, **permissions):
+        self._name = name
+        self._permissions = {}
+        for key, values in self._permissions.items():
+            self._permissions[key] = Permissions(**values)
+    # print(self._permissions)
+
+    def to_dict(self):
+
+        perm = {}
+        for key, value in self._permissions.items():
+            print(key,value)
+            perm[key] = value.to_dict()
+            # print(perm[key])
+            # print(f"value {perm[key] }")
+        # print(perm)
+        return {
+            'name': self._name,
+            'permissions': perm
+        }
+
+
+    @property
+    def name(self):
+        return self._name
+
+    def __getitem__(self, key):
+        return self._permissions[key]
+
+
+class Entity:
+    def __init__(self, entity_id, role):
+        self._entity_id = entity_id
+        self._role = role
+
+    @property
+    def entity_id(self):
+        return self._entity_id
+
+    @property
+    def role(self):
+        return self._role
+
+    @role.setter
+    def role(self, value):
+        self._role = value
+
+
+class User(Entity):
+    def __init__(
+        self, entity_id, first_name, last_name, fathers_name, date_of_birth, role
+    ):
+        super().__init__(entity_id, role)
+        self._first_name = first_name
+        self._last_name = last_name
+        self._fathers_name = fathers_name
+        self._date_of_birth = date_of_birth
+
+    def to_dict(self):
+        fields = {
+            'entity_id': self._entity_id,
+            'first_name': self._first_name,
+            'last_name':  self._last_name,
+            'fathers_name': self._fathers_name,
+            'date_of_birth': self._date_of_birth,
+            'role': self._role.to_dict()
+        }
+        return fields
+
+    @property
+    def first_name(self):
+        return self._first_name
+
+    @property
+    def last_name(self):
+        return self._last_name
+
+    @property
+    def fathers_name(self):
+        return self._fathers_name
+
+    @property
+    def date_of_birth(self):
+        return self._date_of_birth
+
+    @property
+    def age(birth, year=2023):
+        result = year - birth
+        return result
+
+class Organisation(Entity):
+    def __init__(self, entity_id, creation_date, unp, name, role):
+        super().__init__(entity_id, role)
+        self._creation_date = creation_date
+        self._unp = unp
+        self._name = name
+
+    def to_dict(self):
+        fields = {
+            'entity_id': self._entity_id,
+            'role': self._role,
+            'creation_date': self._creation_date,
+            'unp': self._unp,
+            'name': self._name,
+        }
+        return fields
+    @property
+    def creation_date(self):
+        return self._creation_date
+
+    @property
+    def unp(self):
+        return self._unp
+
+    @property
+    def name(self):
+        return self._name
+
+class App(Entity):
+    def __init__(self, entity_id, name, role=None):
+        super().__init__(entity_id, role)
+        self._name = name
+
+    @property
+    def name(self):
+        return self._name
+
 
 # Функция по расчету возраста нашего пользователя.
 def age(birth, year=2023):
@@ -16,116 +167,84 @@ def age(birth, year=2023):
     return result
 
 
-# Функция по добавлению нового пользователя в основной список через ввод данный через клавиатуру.
-def add_new_client():
-    temporary_list = []
-    name = input("Input name: ")
-    surname = input("Input surname: ")
-    middle_name = input("Input middle name: ")
-    while True:  # Блок проверки, что введеный год указан цифрами, а не буквами
-        year_of_birth = input("Input year of birth (only int): ")
-        try:
-            year_of_birth = int(year_of_birth)
-            if year_of_birth in range(
-                1900, (datetime.now().year) + 1
-            ):  # Основной блок функции
-                for i in range(
-                    len(final_list)
-                ):  # Вычисляем максимальное id из существующих данных. Заполняем временный словарь из имеющихся данных.
-                    user_id = final_list[i]["id"]
-                    temporary_list.append(user_id)
-                    max_id = max(temporary_list)
-                    new_dict = {
-                        "id": max_id + 1,
-                        "first_name": name,
-                        "last_name": surname,
-                        "fathers_name": middle_name,
-                        "date_of_birth": year_of_birth,
-                        "date_of_birth": year_of_birth,
-                        "age": age(year_of_birth),
-                    }
-                final_list.append(
-                    new_dict
-                )  # Добавляем временный словарь с новым пользователем в основной список.
-                with open(
-                    "users.json", "w"
-                ) as convert_to_json:  # Сохраняем основной список в формате json в файл user.json.
-                    json.dump(final_list, convert_to_json, ensure_ascii=False, indent=2)
-                with open(
-                    "users.json", "r"
-                ) as f:  # Открываем файл user.json на чтение.
-                    read_json = json.loads(f.read())
-                print(read_json)
-            elif year_of_birth in range((datetime.now().year) + 1, 9999):
-                print("The user has not been born yet")
-            else:
-                print("Is the user definitely alive? Check and try again")
-                break
-        except ValueError:
-            print("This is not integer. Try again.")
-        else:
-            break
-
-
-# Открываем файл users.csv. Достаем данные о пользователях, сортируем и заносим во временный список list_csv.
-with open("users.csv", "r") as csvfile:
-    read_csv = csv.reader(csvfile)
-    next(csvfile)
-    for line in read_csv:
-        list_csv.append(
-            {
-                "id": int(line[0]),
-                "first_name": line[1],
-                "last_name": line[2],
-                "fathers_name": line[3],
-                "date_of_birth": int(line[4]),
-            }
+def new_user():
+    first_name = input("Input first_name: ")
+    last_name = input("Input last_name: ")
+    fathers_name = input("Input fathers_name: ")
+    date_of_birth = input("Input date_of_birth: ")
+    role_name = input("Input role_name: ")
+    max_id = max([int(user_item.entity_id) for user_item in users])
+    users.append(
+        User(
+            max_id + 1,
+            first_name,
+            last_name,
+            fathers_name,
+            date_of_birth,
+            roles[role_name],
         )
+    )
 
-# Открываем файл users.yaml. Достаем данные о пользователях, сортируем и заносим во временный список list_yaml.
-with open("users.yaml", "r") as yamlfile:
-    read_yaml = yaml.load(yamlfile, Loader=yaml.FullLoader)
-    for line in read_yaml["users"]:
-        temp.append(line)
-        list_yaml = [
-            {
-                "id": int(obj["id"]),
-                "first_name": obj["first_name"],
-                "last_name": obj["last_name"],
-                "fathers_name": obj["fathers_name"],
-                "date_of_birth": int(obj["date_of_birth"]),
-            }
-            for obj in temp
-        ]
 
-# Создаем окончательный список из двух временных ранее созданных списков list_csv и list_yaml
-final_list = list_csv + list_yaml
+def save_to_file(users, organisations):
+    DB = {"users": [], "organisations": []}
+    for user in users:
+        DB["users"].append(user.to_dict())
+    for organisation in organisations:
+        DB["organisations"].append(organisation.to_dict())
+    with open("DataBase.json", "w") as convert_to_json:
+        json.dump(DB, convert_to_json, ensure_ascii=False, indent=4)
 
-# Сортируем по id для красивого вывода
-final_list.sort(key=lambda d: int(d["id"]))
 
-# Расчитываем возраст пользователя через функцию age и заносим в его карточку.
-for i in range(len(final_list)):
-    vozrast = final_list[i]["date_of_birth"]
-    final_list[i]["age"] = age(vozrast)
+# Создание объектов на основании данных
+with open("users.json", "r", encoding="utf8") as filejson:
+    users_data = json.loads(filejson.read())["Users"]
+users = []
+for user_data in users_data:
+    user = User(
+        int(user_data["entity_id"]),
+        user_data["first_name"],
+        user_data["last_name"],
+        user_data["fathers_name"],
+        int(user_data["date_of_birth"]),
+        user_data['role'],
+    )
+    users.append(user)
 
-# Ковертируем наш финальный список в формат json и заносим данные в файл users.json.
-with open("users.json", "w") as convert_to_json:
-    json.dump(final_list, convert_to_json, ensure_ascii=False, indent=2)
+with open("users.json", "r", encoding="utf8") as filejson:
+    organisation_data = json.loads(filejson.read())["Organisations"]
+organisations = []
+for organisation_data in organisation_data:
+    organization = Organisation(
+            int(organisation_data["entity_id"]),
+            organisation_data["role"],
+            organisation_data["creation_date"],
+            organisation_data["unp"],
+            organisation_data["name"],
+            )
 
-# Небольшой case по выбору вариантов работы скрипта
-command = input(
-    "What are you doing next? View user.json (input view) "
-    "or add user (input add) and view user.json? For quit input quit: \n"
-)
-match command.split():
-    case ["quit"]:
-        print("Goodbye!")
-    case ["view"]:
-        with open("users.json", "r") as f:
-            read_json = json.loads(f.read())
-        print(read_json)
-    case ["add"]:
-        add_new_client()
-    case _:
-        print(f"Sorry, I couldn't understand {command}. Goodbye")
+organisations.append(organization)
+with open("app.yaml", "r", encoding="utf8") as yamlfile:
+    apps_data = yaml.load(yamlfile, Loader=yaml.FullLoader)["Apps"]
+    apps = []
+    for app_data in apps_data:
+        app = App(int(app_data["entity_id"]), app_data["name"])
+    apps.append(app)
+with open("roles.yaml", "r", encoding="utf8") as yamlfile:
+    roles_data = yaml.load(yamlfile, Loader=yaml.FullLoader)
+    roles = {}
+    for role_name, role_data in roles_data.items():
+        permissions = {}
+        for class_name, class_permissions in role_data.items():
+            # print(class_name, class_permissions)
+            permissions[class_name] = class_permissions #Permissions(**class_permissions)
+            # print(permissions)
+        roles[role_name] = Role(role_name, **permissions)
+for user in users:
+    user.role = roles[user_data["role"]]
+
+for app in apps:
+    app.role = roles[app_data["role"]]
+# print(roles)
+# new_user()
+save_to_file(users, organisations)
