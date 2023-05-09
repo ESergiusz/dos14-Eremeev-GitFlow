@@ -6,6 +6,7 @@ organisations = []
 users = []
 apps = []
 DB = {}
+
 class Permissions:
     def __init__(self, create=False, read=False, update=False, delete=False):
         self._create = create
@@ -15,11 +16,12 @@ class Permissions:
 
     def to_dict(self):
         return {
-            'create': self._create,
-            'read': self._read,
-            'update': self._update,
-            'delete': self._delete,
+            "create": self._create,
+            "read": self._read,
+            "update": self._update,
+            "delete": self._delete,
         }
+
     @property
     def create(self):
         return self._create
@@ -36,7 +38,6 @@ class Permissions:
     def delete(self):
         return self._delete
 
-
 class Role:
     def __init__(self, name, permissions):
         self._name = name
@@ -48,19 +49,11 @@ class Role:
         perm = {}
         for key, value in self._role.items():
             perm[key] = value.to_dict()
-        return {
-            'name': self._name,
-            'permissions': perm
-        }
-
+        return {"name": self._name, "permissions": perm}
 
     @property
     def name(self):
         return self._name
-
-    def __getitem__(self, key):
-        return self._permissions[key]
-
 
 class Entity:
     def __init__(self, entity_id, role):
@@ -79,7 +72,6 @@ class Entity:
     def role(self, value):
         self._role = value
 
-
 class User(Entity):
     def __init__(
         self, entity_id, first_name, last_name, fathers_name, date_of_birth, role
@@ -92,13 +84,12 @@ class User(Entity):
 
     def to_dict(self):
         return {
-            'entity_id': self._entity_id,
-            'first_name': self._first_name,
-            'role': self._role.to_dict(),
-            'last_name':  self._last_name,
-            'fathers_name': self._fathers_name,
-            'date_of_birth': self._date_of_birth,
-
+            "entity_id": self._entity_id,
+            "first_name": self._first_name,
+            "role": self._role.to_dict(),
+            "last_name": self._last_name,
+            "fathers_name": self._fathers_name,
+            "date_of_birth": self._date_of_birth,
         }
 
     @property
@@ -117,10 +108,10 @@ class User(Entity):
     def date_of_birth(self):
         return self._date_of_birth
 
-    @property
-    def age(birth, year=2023):
-        result = year - birth
-        return result
+    # @property
+    # def age(birth, year=2023):
+    #     result = year - birth
+    #     return result
 
 class Organisation(Entity):
     def __init__(self, entity_id, role, creation_date, unp, name):
@@ -131,11 +122,11 @@ class Organisation(Entity):
 
     def to_dict(self):
         return {
-            'entity_id': self._entity_id,
-            'role': self._role.to_dict(),
-            'creation_date': self._creation_date,
-            'unp': self._unp,
-            'name': self._name,
+            "entity_id": self._entity_id,
+            "role": self._role.to_dict(),
+            "creation_date": self._creation_date,
+            "unp": self._unp,
+            "name": self._name,
         }
 
     @property
@@ -157,20 +148,19 @@ class App(Entity):
 
     def to_dict(self):
         fields = {
-            'entity_id': self._entity_id,
-            'name': self._name,
-            'role': self._role.to_dict()
+            "entity_id": self._entity_id,
+            "name": self._name,
+            "role": self._role.to_dict(),
         }
         return fields
+
     @property
     def name(self):
         return self._name
 
-
-def age(birth, year=2023):
-    result = year - birth
-    return result
-
+# def age(birth, year=2023):
+#     result = year - birth
+#     return result
 
 def new_user():
     first_name = input("Input first_name: ")
@@ -186,10 +176,10 @@ def new_user():
             last_name,
             fathers_name,
             date_of_birth,
-            roles[user_data['role']],
+            roles[user_data["role"]],
         )
     )
-    with open('DataBase.json', 'w') as convert_to_json:
+    with open("DataBase.json", "w") as convert_to_json:
         json.dump(DB, convert_to_json, ensure_ascii=False, indent=2)
 
 def save_to_file(users, organisations):
@@ -218,7 +208,7 @@ with open("users.json", "r", encoding="utf8") as filejson:
             user_data["last_name"],
             user_data["fathers_name"],
             user_data["date_of_birth"],
-            roles[user_data['role']]
+            roles[user_data["role"]],
         )
         users.append(user)
 
@@ -231,7 +221,7 @@ with open("users.json", "r", encoding="utf8") as filejson:
             roles[org_data["role"]],
             org_data["creation_date"],
             int(org_data["unp"]),
-            org_data["name"]
+            org_data["name"],
         )
         organisations.append(organization)
 
@@ -242,8 +232,10 @@ with open("app.yaml", "r", encoding="utf8") as yamlfile:
         app = App(int(app_data["entity_id"]), app_data["name"], roles[app_data["role"]])
         apps.append(app)
 
-command = input("What are you doing next? View DataBase (input view) "
-                "or add new user and view DataBase (input add) ? For quit input quit: \n")
+command = input(
+    "What are you doing next? View DataBase (input view) "
+    "or add new user and view DataBase (input add) ? For quit input quit: \n"
+)
 match command.split():
     case ["quit"]:
         print("Goodbye!")
