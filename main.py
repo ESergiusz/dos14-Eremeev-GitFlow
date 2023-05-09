@@ -42,8 +42,6 @@ class Role:
     def __init__(self, name, permissions):
         self._name = name
         self._role = {k: Permissions(**v) for k, v in permissions.items()}
-        # for key, values in permissions.items():
-        #     self._role[key] = Permissions(**values)
 
     def to_dict(self):
         perm = {}
@@ -54,6 +52,9 @@ class Role:
     @property
     def name(self):
         return self._name
+
+    def __getitem__(self, key):
+        return self._role[key]
 
 class Entity:
     def __init__(self, entity_id, role):
@@ -67,10 +68,6 @@ class Entity:
     @property
     def role(self):
         return self._role
-
-    @role.setter
-    def role(self, value):
-        self._role = value
 
 class User(Entity):
     def __init__(
@@ -108,10 +105,10 @@ class User(Entity):
     def date_of_birth(self):
         return self._date_of_birth
 
-    # @property
-    # def age(birth, year=2023):
-    #     result = year - birth
-    #     return result
+    @property
+    def age(birth, year=2023):
+        result = year - birth
+        return result
 
 class Organisation(Entity):
     def __init__(self, entity_id, role, creation_date, unp, name):
@@ -158,16 +155,11 @@ class App(Entity):
     def name(self):
         return self._name
 
-# def age(birth, year=2023):
-#     result = year - birth
-#     return result
-
 def new_user():
     first_name = input("Input first_name: ")
     last_name = input("Input last_name: ")
     fathers_name = input("Input fathers_name: ")
     date_of_birth = input("Input date_of_birth: ")
-    # role_name = input("Input role_name: ")
     max_id = max([int(i.entity_id) for i in users])
     users.append(
         User(
@@ -231,6 +223,7 @@ with open("app.yaml", "r", encoding="utf8") as yamlfile:
     for app_data in apps_data:
         app = App(int(app_data["entity_id"]), app_data["name"], roles[app_data["role"]])
         apps.append(app)
+
 
 command = input(
     "What are you doing next? View DataBase (input view) "
