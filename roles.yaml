@@ -1,0 +1,89 @@
+authn:
+  Identity:
+    create: true
+    delete: true
+    read: true
+    update: true
+  Organisation:
+    create: true
+    delete: true
+    read: true
+    update: true
+  Person:
+    create: true
+    delete: true
+    read: true
+    update: true
+bank:
+  CreditAccount:
+    create: false
+    delete: false
+    read: true
+    update: true
+  DebitAccount:
+    create: false
+    delete: false
+    read: true
+    update: true
+credit_and_deposit_users:
+  Credit:
+    create: true
+    delete: false
+    read: true
+    update: false
+  CreditAccount:
+    create: true
+    delete: false
+    read: true
+    update: false
+  DebitAccount:
+    create: true
+    delete: false
+    read: true
+    update: false
+  Deposit:
+    create: true
+    delete: false
+    read: true
+    update: false
+  Identity:
+    create: false
+    delete: false
+    read: true
+    update: true
+default:
+  Credit:
+    create: false
+    delete: false
+    read: false
+    update: false
+  CreditAccount:
+    create: false
+    delete: false
+    read: false
+    update: false
+  DebitAccount:
+    create: true
+    delete: false
+    read: true
+    update: false
+  Deposit:
+    create: true
+    delete: false
+    read: true
+    update: false
+  Identity:
+    create: false
+    delete: false
+    read: true
+    update: true
+  Organisation:
+    create: false
+    delete: false
+    read: false
+    update: false
+  Person:
+    create: false
+    delete: false
+    read: false
+    update: false
