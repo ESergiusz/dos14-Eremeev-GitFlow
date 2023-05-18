@@ -1,7 +1,7 @@
 Apps:
-- entity_id: -1
+- client_id: -1
   name: authn
   role: authn
-- entity_id: -2
+- client_id: -2
   name: bank
   role: bank

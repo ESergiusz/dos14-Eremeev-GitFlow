@@ -1,11 +1,14 @@
 import json
 import yaml
+from flask import Flask, jsonify, request
+import requests
 
+app_flask = Flask(__name__)
 roles = {}
 organisations = []
 users = []
 apps = []
-DB = {}
+
 
 class Permissions:
     def __init__(self, create=False, read=False, update=False, delete=False):
@@ -38,9 +41,11 @@ class Permissions:
     def delete(self):
         return self._delete
 
+
 class Role:
     def __init__(self, name, permissions):
         self._name = name
+        self._permissions = permissions
         self._role = {k: Permissions(**v) for k, v in permissions.items()}
 
     def to_dict(self):
@@ -53,27 +58,33 @@ class Role:
     def name(self):
         return self._name
 
+    @property
+    def permissions(self):
+        return self._permissions
+
     def __getitem__(self, key):
         return self._role[key]
 
-class Entity:
-    def __init__(self, entity_id, role):
-        self._entity_id = entity_id
+
+class Client:
+    def __init__(self, client_id, role):
+        self._client_id = client_id
         self._role = role
 
     @property
-    def entity_id(self):
-        return self._entity_id
+    def client_id(self):
+        return self._client_id
 
     @property
     def role(self):
         return self._role
 
-class User(Entity):
+
+class User(Client):
     def __init__(
-        self, entity_id, first_name, last_name, fathers_name, date_of_birth, role
+        self, client_id, first_name, last_name, fathers_name, date_of_birth, role
     ):
-        super().__init__(entity_id, role)
+        super().__init__(client_id, role)
         self._first_name = first_name
         self._last_name = last_name
         self._fathers_name = fathers_name
@@ -81,7 +92,7 @@ class User(Entity):
 
     def to_dict(self):
         return {
-            "entity_id": self._entity_id,
+            "client_id": self._client_id,
             "first_name": self._first_name,
             "role": self._role.to_dict(),
             "last_name": self._last_name,
@@ -110,16 +121,17 @@ class User(Entity):
         result = year - birth
         return result
 
-class Organisation(Entity):
-    def __init__(self, entity_id, role, creation_date, unp, name):
-        super().__init__(entity_id, role)
+
+class Organisation(Client):
+    def __init__(self, client_id, role, creation_date, unp, name):
+        super().__init__(client_id, role)
         self._creation_date = creation_date
         self._unp = unp
         self._name = name
 
     def to_dict(self):
         return {
-            "entity_id": self._entity_id,
+            "client_id": self._client_id,
             "role": self._role.to_dict(),
             "creation_date": self._creation_date,
             "unp": self._unp,
@@ -138,14 +150,15 @@ class Organisation(Entity):
     def name(self):
         return self._name
 
-class App(Entity):
-    def __init__(self, entity_id, name, role):
-        super().__init__(entity_id, role)
+
+class App(Client):
+    def __init__(self, client_id, name, role):
+        super().__init__(client_id, role)
         self._name = name
 
     def to_dict(self):
         fields = {
-            "entity_id": self._entity_id,
+            "client_id": self._client_id,
             "name": self._name,
             "role": self._role.to_dict(),
         }
@@ -155,35 +168,6 @@ class App(Entity):
     def name(self):
         return self._name
 
-def new_user():
-    first_name = input("Input first_name: ")
-    last_name = input("Input last_name: ")
-    fathers_name = input("Input fathers_name: ")
-    date_of_birth = input("Input date_of_birth: ")
-    max_id = max([int(i.entity_id) for i in users])
-    users.append(
-        User(
-            max_id + 1,
-            first_name,
-            last_name,
-            fathers_name,
-            date_of_birth,
-            roles[user_data["role"]],
-        )
-    )
-    with open("DataBase.json", "w") as convert_to_json:
-        json.dump(DB, convert_to_json, ensure_ascii=False, indent=2)
-
-def save_to_file(users, organisations):
-    DB = {"users": [], "organisations": [], "apps": []}
-    for user in users:
-        DB["users"].append(user.to_dict())
-    for organisation in organisations:
-        DB["organisations"].append(organisation.to_dict())
-    for app in apps:
-        DB["apps"].append(app.to_dict())
-    with open("DataBase.json", "w") as convert_to_json:
-        json.dump(DB, convert_to_json, ensure_ascii=False, indent=4)
 
 with open("roles.yaml", "r", encoding="utf8") as yamlfile:
     roles_data = yaml.load(yamlfile, Loader=yaml.FullLoader)
@@ -192,10 +176,9 @@ with open("roles.yaml", "r", encoding="utf8") as yamlfile:
 
 with open("users.json", "r", encoding="utf8") as filejson:
     users_data = json.loads(filejson.read())["Users"]
-
     for user_data in users_data:
         user = User(
-            int(user_data["entity_id"]),
+            int(user_data["client_id"]),
             user_data["first_name"],
             user_data["last_name"],
             user_data["fathers_name"],
@@ -206,10 +189,9 @@ with open("users.json", "r", encoding="utf8") as filejson:
 
 with open("users.json", "r", encoding="utf8") as filejson:
     organisations_data = json.loads(filejson.read())["Organisations"]
-
     for org_data in organisations_data:
         organization = Organisation(
-            int(org_data["entity_id"]),
+            int(org_data["client_id"]),
             roles[org_data["role"]],
             org_data["creation_date"],
             int(org_data["unp"]),
@@ -219,29 +201,649 @@ with open("users.json", "r", encoding="utf8") as filejson:
 
 with open("app.yaml", "r", encoding="utf8") as yamlfile:
     apps_data = yaml.load(yamlfile, Loader=yaml.FullLoader)["Apps"]
-
     for app_data in apps_data:
-        app = App(int(app_data["entity_id"]), app_data["name"], roles[app_data["role"]])
+        app = App(int(app_data["client_id"]), app_data["name"], roles[app_data["role"]])
         apps.append(app)
 
 
-command = input(
-    "What are you doing next? View DataBase (input view) "
-    "or add new user and view DataBase (input add) ? For quit input quit: \n"
+@app_flask.route("/")
+def hello():
+    return "Hello my friend. This is TMS homework."
+
+
+@app_flask.route("/api/v1/users", methods=["GET"])
+def read_users():
+    if not request.headers.get("token"):
+        return jsonify({"status": "error", "message": "Token header not found"}), 400
+    elif request.headers.get("token"):
+        client_id = None
+        token_data = eval(request.headers.get("token"))
+        client_id = list(token_data.values())[0]
+        print(client_id)
+        for app in apps:
+            if client_id == app.client_id:
+                if "users" in (app.role.permissions):
+                    if app.role.permissions["users"]["read"] == True:
+                        return [user.to_dict() for user in users]
+                    else:
+                        return (
+                            jsonify({"status": "error", "message": "Access denied"}),
+                            403,
+                        )
+                else:
+                    return (
+                        jsonify({"status": "error", "message": "Permission denied"}),
+                        403,
+                    )
+        else:
+            return (
+                jsonify(
+                    {
+                        "status": "error",
+                        "message": f"No token user with id = {client_id}",
+                    }
+                ),
+                400,
+            )
+
+
+@app_flask.route("/api/v1/users/<int:client_id>", methods=["GET"])
+def read_user(client_id):
+    if not request.headers.get("token"):
+        return jsonify({"status": "error", "message": "Token header not found"}), 400
+    elif request.headers.get("token"):
+        token_data = eval(request.headers.get("token"))
+        id = list(token_data.values())[0]
+        for app in apps:
+            if id == app.client_id:
+                if "users" in (app.role.permissions):
+                    if app.role.permissions["users"]["read"] == True:
+                        for user in users:
+                            if client_id == user.client_id:
+                                return user.to_dict()
+                        else:
+                            return (
+                                jsonify(
+                                    {
+                                        "status": "error",
+                                        "message": f"No user with id = {client_id}",
+                                    }
+                                ),
+                                400,
+                            )
+                    else:
+                        return (
+                            jsonify({"status": "error", "message": "Access denied"}),
+                            403,
+                        )
+                else:
+                    return (
+                        jsonify({"status": "error", "message": "Permission denied"}),
+                        403,
+                    )
+        else:
+            return (
+                jsonify(
+                    {"status": "error", "message": f"No token user with id = {id}"}
+                ),
+                400,
+            )
+
+
+@app_flask.route("/api/v1/organisations", methods=["GET"])
+def read_organisations():
+    if not request.headers.get("token"):
+        return jsonify({"status": "error", "message": "Token header not found"}), 400
+    elif request.headers.get("token"):
+        client_id = None
+        token_data = eval(request.headers.get("token"))
+        client_id = list(token_data.values())[0]
+        for app in apps:
+            if client_id == app.client_id:
+                if "users" in (app.role.permissions):
+                    if app.role.permissions["users"]["read"] == True:
+                        return [
+                            organisation.to_dict() for organisation in organisations
+                        ]
+                    else:
+                        return (
+                            jsonify({"status": "error", "message": "Access denied"}),
+                            403,
+                        )
+                else:
+                    return (
+                        jsonify({"status": "error", "message": "Permission denied"}),
+                        403,
+                    )
+        else:
+            return (
+                jsonify(
+                    {
+                        "status": "error",
+                        "message": f"No token user with id = {client_id}",
+                    }
+                ),
+                400,
+            )
+
+
+@app_flask.route("/api/v1/organisations/<int:client_id>", methods=["GET"])
+def read_organisation(client_id):
+    if not request.headers.get("token"):
+        return jsonify({"status": "error", "message": "Token header not found"}), 400
+    elif request.headers.get("token"):
+        token_data = eval(request.headers.get("token"))
+        id = list(token_data.values())[0]
+        print(id)
+        for app in apps:
+            if id == app.client_id:
+                if "organisations" in (app.role.permissions):
+                    if app.role.permissions["organisations"]["read"] == True:
+                        for organisation in organisations:
+                            if client_id == organisation.client_id:
+                                return organisation.to_dict()
+                        else:
+                            return (
+                                jsonify(
+                                    {
+                                        "status": "error",
+                                        "message": f"No user with id = {client_id}",
+                                    }
+                                ),
+                                400,
+                            )
+                    else:
+                        return (
+                            jsonify({"status": "error", "message": "Access denied"}),
+                            403,
+                        )
+                else:
+                    return (
+                        jsonify({"status": "error", "message": "Permission denied"}),
+                        403,
+                    )
+        else:
+            return (
+                jsonify(
+                    {"status": "error", "message": f"No token user with id = {id}"}
+                ),
+                400,
+            )
+
+
+@app_flask.route("/api/v1/users", methods=["PUT"])
+def add_user():
+    if not request.headers.get("token"):
+        return jsonify({"status": "error", "message": "Token header not found"}), 400
+    elif request.headers.get("token"):
+        client_id = None
+        token_data = eval(request.headers.get("token"))
+        client_id = list(token_data.values())[0]
+        for app in apps:
+            if client_id == app.client_id:
+                if "users" in (app.role.permissions):
+                    if app.role.permissions["users"]["create"] == True:
+                        new_user = {}
+                        temp = {}
+                        usersdata = {}
+                        data = request.json
+                        new_user["client_id"] = (
+                            max([int(i.client_id) for i in users])
+                        ) + 1
+                        new_user["first_name"] = data["first_name"]
+                        new_user["role"] = data["role"]
+                        new_user["last_name"] = data["last_name"]
+                        new_user["fathers_name"] = data["fathers_name"]
+                        new_user["date_of_birth"] = data["date_of_birth"]
+                        with open("users.json", "r", encoding="utf8") as userjson:
+                            temp = json.loads(userjson.read())["Users"]
+                        temp.append(new_user)
+                        usersdata["Users"] = temp
+                        with open("users.json", "r", encoding="utf8") as alljson:
+                            all_data = json.loads(alljson.read())
+                        all_data.update(usersdata)
+                        with open("users.json", "w") as f:
+                            json.dump(all_data, f, ensure_ascii=False, indent=2)
+                        return (
+                            jsonify({"status": "OK", "message": f"Add new user "}),
+                            200,
+                        )
+                    else:
+                        return (
+                            jsonify({"status": "error", "message": "Access denied"}),
+                            403,
+                        )
+                else:
+                    return (
+                        jsonify({"status": "error", "message": "Permission denied"}),
+                        403,
+                    )
+        else:
+            return (
+                jsonify(
+                    {
+                        "status": "error",
+                        "message": f"No token user with id = {client_id}",
+                    }
+                ),
+                400,
+            )
+
+
+@app_flask.route("/api/v1/organisations", methods=["PUT"])
+def add_organisation():
+    if not request.headers.get("token"):
+        return jsonify({"status": "error", "message": "Token header not found"}), 400
+    elif request.headers.get("token"):
+        client_id = None
+        token_data = eval(request.headers.get("token"))
+        client_id = list(token_data.values())[0]
+        for app in apps:
+            if client_id == app.client_id:
+                if "users" in (app.role.permissions):
+                    if app.role.permissions["users"]["create"] == True:
+                        new_organisation = {}
+                        temp = {}
+                        organisationsdata = {}
+                        data = request.json
+                        new_organisation["client_id"] = (
+                            max([int(i.client_id) for i in organisations])
+                        ) + 1
+                        new_organisation["role"] = data["role"]
+                        new_organisation["creation_date"] = data["creation_date"]
+                        new_organisation["unp"] = data["unp"]
+                        new_organisation["name"] = data["name"]
+                        with open("users.json", "r", encoding="utf8") as userjson:
+                            temp = json.loads(userjson.read())["Organisations"]
+                        temp.append(new_organisation)
+                        organisationsdata["Organisations"] = temp
+                        with open("users.json", "r", encoding="utf8") as alljson:
+                            all_data = json.loads(alljson.read())
+                        all_data.update(organisationsdata)
+                        with open("users.json", "w") as f:
+                            json.dump(all_data, f, ensure_ascii=False, indent=2)
+                        return (
+                            jsonify(
+                                {"status": "OK", "message": f"Add new organisation"}
+                            ),
+                            200,
+                        )
+                    else:
+                        return (
+                            jsonify({"status": "error", "message": "Access denied"}),
+                            403,
+                        )
+                else:
+                    return (
+                        jsonify({"status": "error", "message": "Permission denied"}),
+                        403,
+                    )
+        else:
+            return (
+                jsonify(
+                    {
+                        "status": "error",
+                        "message": f"No token user with id = {client_id}",
+                    }
+                ),
+                400,
+            )
+
+
+@app_flask.route("/api/v1/credits/authz/<string:auth_permission>", methods=["GET"])
+def check_credits(auth_permission):
+    try:
+        if not request.headers.get("token"):
+            return (
+                jsonify({"status": "error", "message": "Token header not found"}),
+                400,
+            )
+        elif request.headers.get("token"):
+            client_id = None
+            token_data = eval(request.headers.get("token"))
+            client_id = list(token_data.values())[0]
+            for user in users:
+                if client_id == user.client_id:
+                    if "credits" in (user.role.permissions):
+                        authorized = getattr(user.role["credits"], auth_permission)
+                        if authorized == True:
+                            return (
+                                jsonify({"status": "success", "message": "authorized"}),
+                                200,
+                            )
+                        else:
+                            return (
+                                jsonify(
+                                    {"status": "error", "message": "not authorized"}
+                                ),
+                                403,
+                            )
+                    else:
+                        return (
+                            jsonify(
+                                {"status": "error", "message": "Permission denied"}
+                            ),
+                            403,
+                        )
+            else:
+                return (
+                    jsonify(
+                        {
+                            "status": "error",
+                            "message": f"No token user with id = {client_id}",
+                        }
+                    ),
+                    400,
+                )
+    except Exception:
+        return jsonify({"status": "error", "message": "not authorized"}), 403
+
+
+@app_flask.route("/api/v1/deposits/authz/<string:auth_permission>", methods=["GET"])
+def check_deposits(auth_permission):
+    try:
+        if not request.headers.get("token"):
+            return (
+                jsonify({"status": "error", "message": "Token header not found"}),
+                400,
+            )
+        elif request.headers.get("token"):
+            client_id = None
+            token_data = eval(request.headers.get("token"))
+            client_id = list(token_data.values())[0]
+            for user in users:
+                if client_id == user.client_id:
+                    if "deposits" in (user.role.permissions):
+                        authorized = getattr(user.role["deposits"], auth_permission)
+                        if authorized == True:
+                            return (
+                                jsonify({"status": "success", "message": "authorized"}),
+                                200,
+                            )
+                        else:
+                            return (
+                                jsonify(
+                                    {"status": "error", "message": "not authorized"}
+                                ),
+                                403,
+                            )
+                    else:
+                        return (
+                            jsonify(
+                                {"status": "error", "message": "Permission denied"}
+                            ),
+                            403,
+                        )
+            else:
+                return (
+                    jsonify(
+                        {
+                            "status": "error",
+                            "message": f"No token user with id = {client_id}",
+                        }
+                    ),
+                    400,
+                )
+    except Exception:
+        return jsonify({"status": "error", "message": "not authorized"}), 403
+
+
+@app_flask.route(
+    "/api/v1/debitaccounts/authz/<string:auth_permission>", methods=["GET"]
 )
-match command.split():
-    case ["quit"]:
-        print("Goodbye!")
-    case ["view"]:
-        save_to_file(users, organisations)
-        with open('DataBase.json','r') as f:
-            read_json = json.loads(f.read())
-        print(read_json)
-    case ["add"]:
-        new_user()
-        save_to_file(users, organisations)
-        with open('DataBase.json','r') as f:
-            read_json = json.loads(f.read())
-        print(read_json)
-    case _:
-        print(f"Sorry, I couldn't understand {command}. Goodbye")
+def check_debitaccounts(auth_permission):
+    try:
+        if not request.headers.get("token"):
+            return (
+                jsonify({"status": "error", "message": "Token header not found"}),
+                400,
+            )
+        elif request.headers.get("token"):
+            client_id = None
+            token_data = eval(request.headers.get("token"))
+            client_id = list(token_data.values())[0]
+            for user in users:
+                if client_id == user.client_id:
+                    if "debitaccounts" in (user.role.permissions):
+                        authorized = getattr(
+                            user.role["debitaccounts"], auth_permission
+                        )
+                        if authorized == True:
+                            return (
+                                jsonify({"status": "success", "message": "authorized"}),
+                                200,
+                            )
+                        else:
+                            return (
+                                jsonify(
+                                    {"status": "error", "message": "not authorized"}
+                                ),
+                                403,
+                            )
+                    else:
+                        return (
+                            jsonify(
+                                {"status": "error", "message": "Permission denied"}
+                            ),
+                            403,
+                        )
+            else:
+                return (
+                    jsonify(
+                        {
+                            "status": "error",
+                            "message": f"No token user with id = {client_id}",
+                        }
+                    ),
+                    400,
+                )
+    except Exception:
+        return jsonify({"status": "error", "message": "not authorized"}), 403
+
+
+@app_flask.route(
+    "/api/v1/creditaccounts/authz/<string:auth_permission>", methods=["GET"]
+)
+def check_creditaccounts(auth_permission):
+    try:
+        if not request.headers.get("token"):
+            return (
+                jsonify({"status": "error", "message": "Token header not found"}),
+                400,
+            )
+        elif request.headers.get("token"):
+            client_id = None
+            token_data = eval(request.headers.get("token"))
+            client_id = list(token_data.values())[0]
+            for user in users:
+                if client_id == user.client_id:
+                    if "creditaccounts" in (user.role.permissions):
+                        authorized = getattr(
+                            user.role["creditaccounts"], auth_permission
+                        )
+                        if authorized == True:
+                            return (
+                                jsonify({"status": "success", "message": "authorized"}),
+                                200,
+                            )
+                        else:
+                            return (
+                                jsonify(
+                                    {"status": "error", "message": "not authorized"}
+                                ),
+                                403,
+                            )
+                    else:
+                        return (
+                            jsonify(
+                                {"status": "error", "message": "Permission denied"}
+                            ),
+                            403,
+                        )
+            else:
+                return (
+                    jsonify(
+                        {
+                            "status": "error",
+                            "message": f"No token user with id = {client_id}",
+                        }
+                    ),
+                    400,
+                )
+    except Exception:
+        return jsonify({"status": "error", "message": "not authorized"}), 403
+
+
+@app_flask.route("/api/v1/users/authz/<string:auth_permission>", methods=["GET"])
+def check_users(auth_permission):
+    try:
+        if not request.headers.get("token"):
+            return (
+                jsonify({"status": "error", "message": "Token header not found"}),
+                400,
+            )
+        elif request.headers.get("token"):
+            client_id = None
+            token_data = eval(request.headers.get("token"))
+            client_id = list(token_data.values())[0]
+            for user in users:
+                if client_id == user.client_id:
+                    if "users" in (user.role.permissions):
+                        authorized = getattr(user.role["users"], auth_permission)
+                        if authorized == True:
+                            return (
+                                jsonify({"status": "success", "message": "authorized"}),
+                                200,
+                            )
+                        else:
+                            return (
+                                jsonify(
+                                    {"status": "error", "message": "not authorized"}
+                                ),
+                                403,
+                            )
+                    else:
+                        return (
+                            jsonify(
+                                {"status": "error", "message": "Permission denied"}
+                            ),
+                            403,
+                        )
+            else:
+                return (
+                    jsonify(
+                        {
+                            "status": "error",
+                            "message": f"No token user with id = {client_id}",
+                        }
+                    ),
+                    400,
+                )
+    except Exception:
+        return jsonify({"status": "error", "message": "not authorized"}), 403
+
+
+@app_flask.route(
+    "/api/v1/organisations/authz/<string:auth_permission>", methods=["GET"]
+)
+def check_organisations(auth_permission):
+    try:
+        if not request.headers.get("token"):
+            return (
+                jsonify({"status": "error", "message": "Token header not found"}),
+                400,
+            )
+        elif request.headers.get("token"):
+            client_id = None
+            token_data = eval(request.headers.get("token"))
+            client_id = list(token_data.values())[0]
+            for user in users:
+                if client_id == user.client_id:
+                    if "organisations" in (user.role.permissions):
+                        authorized = getattr(
+                            user.role["organisations"], auth_permission
+                        )
+                        if authorized == True:
+                            return (
+                                jsonify({"status": "success", "message": "authorized"}),
+                                200,
+                            )
+                        else:
+                            return (
+                                jsonify(
+                                    {"status": "error", "message": "not authorized"}
+                                ),
+                                403,
+                            )
+                    else:
+                        return (
+                            jsonify(
+                                {"status": "error", "message": "Permission denied"}
+                            ),
+                            403,
+                        )
+            else:
+                return (
+                    jsonify(
+                        {
+                            "status": "error",
+                            "message": f"No token user with id = {client_id}",
+                        }
+                    ),
+                    400,
+                )
+    except Exception:
+        return jsonify({"status": "error", "message": "not authorized"}), 403
+
+
+@app_flask.route("/api/v1/identities/authz/<string:auth_permission>", methods=["GET"])
+def check_identities(auth_permission):
+    try:
+        if not request.headers.get("token"):
+            return (
+                jsonify({"status": "error", "message": "Token header not found"}),
+                400,
+            )
+        elif request.headers.get("token"):
+            client_id = None
+            token_data = eval(request.headers.get("token"))
+            client_id = list(token_data.values())[0]
+            for user in users:
+                if client_id == user.client_id:
+                    if "identities" in (user.role.permissions):
+                        authorized = getattr(user.role["identities"], auth_permission)
+                        if authorized == True:
+                            return (
+                                jsonify({"status": "success", "message": "authorized"}),
+                                200,
+                            )
+                        else:
+                            return (
+                                jsonify(
+                                    {"status": "error", "message": "not authorized"}
+                                ),
+                                403,
+                            )
+                    else:
+                        return (
+                            jsonify(
+                                {"status": "error", "message": "Permission denied"}
+                            ),
+                            403,
+                        )
+            else:
+                return (
+                    jsonify(
+                        {
+                            "status": "error",
+                            "message": f"No token user with id = {client_id}",
+                        }
+                    ),
+                    400,
+                )
+    except Exception:
+        return jsonify({"status": "error", "message": "not authorized"}), 403
+
+
+if __name__ == "__main__":
+    app_flask.run(debug=True)
