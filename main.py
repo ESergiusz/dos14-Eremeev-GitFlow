@@ -376,6 +376,7 @@ def read_user(client_id):
         400,
     )
 
+
 @app_flask.route("/api/v1/organisations", methods=["GET"])
 def read_organisations():
     if not request.headers.get("token"):
@@ -388,7 +389,9 @@ def read_organisations():
             if client_id == app.client_id:
                 if "organisations" in (app.role.permissions):
                     if app.role.permissions["organisations"]["read"] == True:
-                        return [organisation.to_dict() for organisation in organisations]
+                        return [
+                            organisation.to_dict() for organisation in organisations
+                        ]
                     else:
                         return (
                             jsonify({"status": "error", "message": "Access denied"}),
@@ -403,7 +406,9 @@ def read_organisations():
             if client_id == user.client_id:
                 if "organisations" in (user.role.permissions):
                     if user.role.permissions["organisations"]["read"] == True:
-                        return [organisation.to_dict() for organisation in organisations]
+                        return [
+                            organisation.to_dict() for organisation in organisations
+                        ]
                     else:
                         return (
                             jsonify({"status": "error", "message": "Access denied"}),
@@ -418,7 +423,9 @@ def read_organisations():
             if client_id == organisation.client_id:
                 if "organisations" in (organisation.role.permissions):
                     if organisation.role.permissions["organisations"]["read"] == True:
-                        return [organisation.to_dict() for organisation in organisations]
+                        return [
+                            organisation.to_dict() for organisation in organisations
+                        ]
                     else:
                         return (
                             jsonify({"status": "error", "message": "Access denied"}),
@@ -438,6 +445,7 @@ def read_organisations():
         ),
         400,
     )
+
 
 @app_flask.route("/api/v1/organisations/<int:client_id>", methods=["GET"])
 def read_organisation(client_id):
@@ -595,8 +603,8 @@ def add_user():
                         usersdata = {}
                         data = request.json
                         new_user["client_id"] = (
-                                                    max([int(i.client_id) for i in users])
-                                                ) + 1
+                            max([int(i.client_id) for i in users])
+                        ) + 1
                         new_user["first_name"] = data["first_name"]
                         new_user["role"] = data["role"]
                         new_user["last_name"] = data["last_name"]
@@ -634,8 +642,8 @@ def add_user():
                         usersdata = {}
                         data = request.json
                         new_user["client_id"] = (
-                                                    max([int(i.client_id) for i in users])
-                                                ) + 1
+                            max([int(i.client_id) for i in users])
+                        ) + 1
                         new_user["first_name"] = data["first_name"]
                         new_user["role"] = data["role"]
                         new_user["last_name"] = data["last_name"]
@@ -728,8 +736,8 @@ def add_organisation():
                         organisationsdata = {}
                         data = request.json
                         new_organisation["client_id"] = (
-                                                            max([int(i.client_id) for i in organisations])
-                                                        ) + 1
+                            max([int(i.client_id) for i in organisations])
+                        ) + 1
                         new_organisation["role"] = data["role"]
                         new_organisation["creation_date"] = data["creation_date"]
                         new_organisation["unp"] = data["unp"]
@@ -768,8 +776,8 @@ def add_organisation():
                         organisationsdata = {}
                         data = request.json
                         new_organisation["client_id"] = (
-                                                            max([int(i.client_id) for i in organisations])
-                                                        ) + 1
+                            max([int(i.client_id) for i in organisations])
+                        ) + 1
                         new_organisation["role"] = data["role"]
                         new_organisation["creation_date"] = data["creation_date"]
                         new_organisation["unp"] = data["unp"]
@@ -860,6 +868,7 @@ def check_permission(entity, auth_permission):
                 )
     except Exception:
         return jsonify({"status": "error", "message": "not authorized"}), 403
+
 
 if __name__ == "__main__":
     app_flask.run()
