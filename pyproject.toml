@@ -8,7 +8,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.11"
 pyyaml = "6.*"
-flack = "*"
+flask = "*"
 
 [tool.poetry.group.dev]
 optional = true

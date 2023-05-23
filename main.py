@@ -205,6 +205,17 @@ with open("app.yaml", "r", encoding="utf8") as yamlfile:
         app = App(int(app_data["client_id"]), app_data["name"], roles[app_data["role"]])
         apps.append(app)
 
+def max_id():
+    id_list = []
+    id_user = max([int(i.client_id) for i in users])
+    id_list.append(id_user)
+    id_app = max([int(i.client_id) for i in apps])
+    id_list.append(id_app)
+    id_organisation = max([int(i.client_id) for i in organisations])
+    id_list.append(id_organisation)
+    max_id = max(id_list)
+    return max_id
+
 
 @app_flask.route("/")
 def hello():
@@ -277,16 +288,15 @@ def read_users():
         400,
     )
 
-
 @app_flask.route("/api/v1/users/<int:client_id>", methods=["GET"])
 def read_user(client_id):
     if not request.headers.get("token"):
         return jsonify({"status": "error", "message": "Token header not found"}), 400
     elif request.headers.get("token"):
-        token_data = eval(request.headers.get("token"))
-        id = list(token_data.values())[0]
+        token_data = json.loads(request.headers.get("token"))
+        cli_id = token_data["client_id"]
         for app in apps:
-            if id == app.client_id:
+            if cli_id == app.client_id:
                 if "users" in (app.role.permissions):
                     if app.role.permissions["users"]["read"] == True:
                         for user in users:
@@ -313,7 +323,7 @@ def read_user(client_id):
                         403,
                     )
         for user in users:
-            if id == user.client_id:
+            if cli_id == user.client_id:
                 if "users" in (user.role.permissions):
                     if user.role.permissions["users"]["read"] == True:
                         for user in users:
@@ -340,7 +350,7 @@ def read_user(client_id):
                         403,
                     )
         for organisation in organisations:
-            if id == organisation.client_id:
+            if cli_id == organisation.client_id:
                 if "users" in (organisation.role.permissions):
                     if organisation.role.permissions["users"]["read"] == True:
                         for user in users:
@@ -382,9 +392,8 @@ def read_organisations():
     if not request.headers.get("token"):
         return jsonify({"status": "error", "message": "Token header not found"}), 400
     elif request.headers.get("token"):
-        client_id = None
-        token_data = eval(request.headers.get("token"))
-        client_id = list(token_data.values())[0]
+        token_data = json.loads(request.headers.get("token"))
+        client_id = token_data["client_id"]
         for app in apps:
             if client_id == app.client_id:
                 if "organisations" in (app.role.permissions):
@@ -452,10 +461,10 @@ def read_organisation(client_id):
     if not request.headers.get("token"):
         return jsonify({"status": "error", "message": "Token header not found"}), 400
     elif request.headers.get("token"):
-        token_data = eval(request.headers.get("token"))
-        id = list(token_data.values())[0]
+        token_data = json.loads(request.headers.get("token"))
+        cli_id = token_data["client_id"]
         for app in apps:
-            if id == app.client_id:
+            if cli_id == app.client_id:
                 if "organisations" in (app.role.permissions):
                     if app.role.permissions["organisations"]["read"] == True:
                         for organisation in organisations:
@@ -482,7 +491,7 @@ def read_organisation(client_id):
                         403,
                     )
         for user in users:
-            if id == user.client_id:
+            if cli_id == user.client_id:
                 if "organisations" in (user.role.permissions):
                     if user.role.permissions["organisations"]["read"] == True:
                         for organisation in organisations:
@@ -509,7 +518,7 @@ def read_organisation(client_id):
                         403,
                     )
         for organisation in organisations:
-            if id == organisation.client_id:
+            if cli_id == organisation.client_id:
                 if "organisations" in (organisation.role.permissions):
                     if organisation.role.permissions["organisations"]["read"] == True:
                         for organisation in organisations:
@@ -551,10 +560,8 @@ def add_user():
     if not request.headers.get("token"):
         return jsonify({"status": "error", "message": "Token header not found"}), 400
     elif request.headers.get("token"):
-        client_id = None
-        token_data = eval(request.headers.get("token"))
-        client_id = list(token_data.values())[0]
-        print(client_id)
+        token_data = json.loads(request.headers.get("token"))
+        client_id = token_data["client_id"]
         for app in apps:
             if client_id == app.client_id:
                 if "users" in (app.role.permissions):
@@ -563,9 +570,7 @@ def add_user():
                         temp = {}
                         usersdata = {}
                         data = request.json
-                        new_user["client_id"] = (
-                            max([int(i.client_id) for i in users])
-                        ) + 1
+                        new_user["client_id"] = max_id() + 1
                         new_user["first_name"] = data["first_name"]
                         new_user["role"] = data["role"]
                         new_user["last_name"] = data["last_name"]
@@ -602,9 +607,7 @@ def add_user():
                         temp = {}
                         usersdata = {}
                         data = request.json
-                        new_user["client_id"] = (
-                            max([int(i.client_id) for i in users])
-                        ) + 1
+                        new_user["client_id"] = max_id() + 1
                         new_user["first_name"] = data["first_name"]
                         new_user["role"] = data["role"]
                         new_user["last_name"] = data["last_name"]
@@ -641,9 +644,7 @@ def add_user():
                         temp = {}
                         usersdata = {}
                         data = request.json
-                        new_user["client_id"] = (
-                            max([int(i.client_id) for i in users])
-                        ) + 1
+                        new_user["client_id"] = max_id() + 1
                         new_user["first_name"] = data["first_name"]
                         new_user["role"] = data["role"]
                         new_user["last_name"] = data["last_name"]
@@ -684,9 +685,8 @@ def add_organisation():
     if not request.headers.get("token"):
         return jsonify({"status": "error", "message": "Token header not found"}), 400
     elif request.headers.get("token"):
-        client_id = None
-        token_data = eval(request.headers.get("token"))
-        client_id = list(token_data.values())[0]
+        token_data = json.loads(request.headers.get("token"))
+        client_id = token_data["client_id"]
         for app in apps:
             if client_id == app.client_id:
                 if "organisations" in (app.role.permissions):
@@ -695,9 +695,7 @@ def add_organisation():
                         temp = {}
                         organisationsdata = {}
                         data = request.json
-                        new_organisation["client_id"] = (
-                            max([int(i.client_id) for i in organisations])
-                        ) + 1
+                        new_organisation["client_id"] = max_id() + 1
                         new_organisation["role"] = data["role"]
                         new_organisation["creation_date"] = data["creation_date"]
                         new_organisation["unp"] = data["unp"]
@@ -735,9 +733,7 @@ def add_organisation():
                         temp = {}
                         organisationsdata = {}
                         data = request.json
-                        new_organisation["client_id"] = (
-                            max([int(i.client_id) for i in organisations])
-                        ) + 1
+                        new_organisation["client_id"] = max_id() + 1
                         new_organisation["role"] = data["role"]
                         new_organisation["creation_date"] = data["creation_date"]
                         new_organisation["unp"] = data["unp"]
@@ -775,9 +771,7 @@ def add_organisation():
                         temp = {}
                         organisationsdata = {}
                         data = request.json
-                        new_organisation["client_id"] = (
-                            max([int(i.client_id) for i in organisations])
-                        ) + 1
+                        new_organisation["client_id"] = max_id() + 1
                         new_organisation["role"] = data["role"]
                         new_organisation["creation_date"] = data["creation_date"]
                         new_organisation["unp"] = data["unp"]
@@ -830,13 +824,58 @@ def check_permission(entity, auth_permission):
                 400,
             )
         elif request.headers.get("token"):
-            client_id = None
-            token_data = eval(request.headers.get("token"))
-            client_id = list(token_data.values())[0]
+            token_data = json.loads(request.headers.get("token"))
+            client_id = token_data["client_id"]
             for user in users:
                 if client_id == user.client_id:
                     if entity in (user.role.permissions):
                         authorized = getattr(user.role[entity], auth_permission)
+                        if authorized == True:
+                            return (
+                                jsonify({"status": "success", "message": "authorized"}),
+                                200,
+                            )
+                        else:
+                            return (
+                                jsonify(
+                                    {"status": "error", "message": "not authorized"}
+                                ),
+                                403,
+                            )
+                    else:
+                        return (
+                            jsonify(
+                                {"status": "error", "message": "Permission denied"}
+                            ),
+                            403,
+                        )
+            for app in apps:
+                if client_id == app.client_id:
+                    if entity in (app.role.permissions):
+                        authorized = getattr(app.role[entity], auth_permission)
+                        if authorized == True:
+                            return (
+                                jsonify({"status": "success", "message": "authorized"}),
+                                200,
+                            )
+                        else:
+                            return (
+                                jsonify(
+                                    {"status": "error", "message": "not authorized"}
+                                ),
+                                403,
+                            )
+                    else:
+                        return (
+                            jsonify(
+                                {"status": "error", "message": "Permission denied"}
+                            ),
+                            403,
+                        )
+            for organisation in organisations:
+                if client_id == organisation.client_id:
+                    if entity in (organisation.role.permissions):
+                        authorized = getattr(organisation.role[entity], auth_permission)
                         if authorized == True:
                             return (
                                 jsonify({"status": "success", "message": "authorized"}),
