@@ -1,7 +1,6 @@
 import json
 import yaml
 from flask import Flask, jsonify, request
-import requests
 
 app_flask = Flask(__name__)
 roles = {}
@@ -230,9 +229,9 @@ def read_users():
             400,
         )
     elif request.headers.get("token"):
-        client_id = None
-        token_data = eval(request.headers.get("token"))
-        client_id = list(token_data.values())[0]
+        # client_id = None
+        token_data = json.loads(request.headers.get("token"))
+        client_id = token_data["client_id"]
         for app in apps:
             if client_id == app.client_id:
                 if "users" in (app.role.permissions):
