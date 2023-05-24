@@ -379,7 +379,7 @@ def read_user(client_id):
         jsonify(
             {
                 "status": "error",
-                "message": f"No token user with id = {id}",
+                "message": f"No token user with id = {cli_id}",
             }
         ),
         400,
@@ -547,7 +547,7 @@ def read_organisation(client_id):
         jsonify(
             {
                 "status": "error",
-                "message": f"No token user with id = {id}",
+                "message": f"No token user with id = {cli_id}",
             }
         ),
         400,
