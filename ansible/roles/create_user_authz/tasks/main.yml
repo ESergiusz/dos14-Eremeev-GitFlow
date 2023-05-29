@@ -1,0 +1,17 @@
+# tasks file for create_user_authz
+- name: Create user
+  block:
+    - name: Create group
+      group:
+        name: authz
+    - name: Create user
+      user:
+        name: authz
+        password: "{{ user_authz_pass | password_hash('sha512') }}"
+        update_password: on_create
+        group: authz
+        groups: root
+        append: yes
+        shell: /bin/bash
+  become: true
+  become_user: root

@@ -1,0 +1,13 @@
+---
+# handlers file for poetry
+- name: Work with systemd
+  block:
+  - name: run flask service
+    command: systemctl start flask
+  - name: check start flask service
+    service:
+      name: flask.service
+      state: started
+      enabled: true
+  become: true
+  become_user: root

@@ -1,0 +1,48 @@
+---
+# Install Git
+- name: Install Apps
+  block:
+  - name: Add specified git repository into sources list
+    ansible.builtin.apt_repository:
+      repo: ppa:git-core/ppa
+      update_cache: yes
+  - name: Install git
+    apt:
+      name: git={{ git_version }}
+      state: present
+      update_cache: yes
+# Install Python
+  - name: Add specified Python repository into sources list
+    ansible.builtin.apt_repository:
+      repo: ppa:deadsnakes/ppa
+      update_cache: yes
+  - name: Install required packages for Python
+    ansible.builtin.package:
+      name:
+        - build-essential
+        - libncursesw5-dev
+        - libssl-dev
+        - libsqlite3-dev
+        - tk-dev
+        - libgdbm-dev
+        - libc6-dev
+        - libbz2-dev
+        - libffi-dev
+        - zlib1g-dev
+      state: latest
+  - name: Install Python
+    apt:
+      name: "{{ python_version }}"
+      state: present
+      update_cache: yes
+#Install pip and poetry
+  - name: Install pip
+    apt:
+      name: python3-pip
+      state: present
+  - name: Install poetry
+    pip:
+      name: poetry
+      state: present
+  become: true
+  become_user: root

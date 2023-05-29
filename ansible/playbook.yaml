@@ -1,0 +1,7 @@
+- hosts: all
+  vars_files:
+    - pass.yaml
+  roles:
+    - create_user_authz
+    - install_apps
+    - poetry
