@@ -30,6 +30,7 @@
         - libffi-dev
         - zlib1g-dev
       state: latest
+      update_cache: yes
   - name: Install Python
     apt:
       name: "{{ python_version }}"
@@ -40,9 +41,48 @@
     apt:
       name: python3-pip
       state: present
+      update_cache: yes
   - name: Install poetry
     pip:
       name: poetry
       state: present
+#Install Docker
+  - name: Remove old version packages
+    apt:
+      name:
+        - docker.io
+        - docker-compose
+        - docker-doc
+        - podman-docker
+        - containerd
+        - runc
+      state: absent
+  - name: Install required packages for Docker
+    apt:
+      pkg:
+        - ca-certificates
+        - curl
+        - gnupg
+      state: latest
+      update_cache: true
+  - name: Add Docker GPG apt Key
+    apt_key:
+      url: https://download.docker.com/linux/ubuntu/gpg
+      state: present
+  - name: Add Docker Repository
+    apt_repository:
+      repo: deb https://download.docker.com/linux/ubuntu focal stable
+      state: present
+  - name: Install Docker
+    apt:
+      name:
+        - docker-ce
+        - docker-ce-cli
+        - containerd.io
+        - docker-buildx-plugin
+        - docker-compose-plugin
+      state: latest
+      update_cache: true
   become: true
   become_user: root
+

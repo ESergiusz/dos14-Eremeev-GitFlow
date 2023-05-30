@@ -11,3 +11,6 @@
 * poetry install
 * poetry run flask —app main.py run (systemd service)
 * start systemd service
+
+## Homework 23
+Cделать с помощью Ansible  роль которая устанавливает Docker на Ubuntu 22.04
