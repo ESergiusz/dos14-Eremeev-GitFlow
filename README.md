@@ -13,4 +13,4 @@
 * start systemd service
 
 ## Homework 23
-Cделать с помощью Ansible  роль которая устанавливает Docker на Ubuntu 22.04
+Cделать с помощью Ansible  роль которая устанавливает Docker на Ubuntu 22.04.
