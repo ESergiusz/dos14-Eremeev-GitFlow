@@ -2,11 +2,11 @@
 # handlers file for poetry
 - name: Work with systemd
   block:
-  - name: run flask service
-    command: systemctl start flask
-  - name: check start flask service
+  - name: run authz.service
+    command: systemctl start authz.service
+  - name: check start authz.service
     service:
-      name: flask.service
+      name: authz.service
       state: started
       enabled: true
   become: true
