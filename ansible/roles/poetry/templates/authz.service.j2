@@ -1,0 +1,13 @@
+[Unit]
+Description=authz.service
+After=network.target
+
+[Service]
+User=authz
+Restart=on-failure
+RestartSec=6
+WorkingDirectory=/home/authz/git
+ExecStart=/bin/bash -c "poetry run flask --app main.py run"
+
+[Install]
+WantedBy=multi-user.target
