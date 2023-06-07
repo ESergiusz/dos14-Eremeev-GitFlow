@@ -1,0 +1,9 @@
+version: "3.4"
+services:
+  authz:
+    image: authz
+    container_name: authz-service
+    build: .
+    tty: true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro

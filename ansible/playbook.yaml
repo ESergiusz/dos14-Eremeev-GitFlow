@@ -4,4 +4,4 @@
   roles:
     - create_user_authz
     - install_apps
-    - poetry
+    - service_authz
