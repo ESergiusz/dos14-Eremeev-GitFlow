@@ -8,15 +8,7 @@
       dest: /home/authz/git
       single_branch: yes
       force: yes
-      version: master
-  - name: Сopy docker-compose.yaml
-    copy:
-      src: docker-compose.yaml
-      dest: /home/authz/git
-  - name: copy Dockerfile
-    copy:
-      src: Dockerfile
-      dest: /home/authz/git
+      version: develop
   - name: Build container (docker-compose)
     community.docker.docker_compose:
       project_src: /home/authz/git
