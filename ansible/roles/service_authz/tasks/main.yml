@@ -8,11 +8,11 @@
       dest: /home/authz/git
       single_branch: yes
       force: yes
-      version: feature-hw-25
+      version: develop
   - name: Build container (docker-compose)
     community.docker.docker_compose:
       project_src: /home/authz/git
-      files:
-        - docker-compose.yaml
+#      files:
+#        - docker-compose.yaml
   become: true
   become_user: authz

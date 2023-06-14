@@ -3,7 +3,7 @@ services:
   authz:
     image: authz
     container_name: authz-service
-    build: ansible/roles/service_authz/files
+    build: /home/authz/git
     tty: true
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
