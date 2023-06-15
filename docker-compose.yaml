@@ -8,4 +8,6 @@ services:
       - 80:5000
     tty: true
     volumes:
-      - $HOME:/home/authz/app
+      - Docker_Authz:/home/authz/app
+volumes:
+  Docker_Authz:

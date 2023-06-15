@@ -909,4 +909,4 @@ def check_permission(entity, auth_permission):
 
 
 if __name__ == "__main__":
-    app_flask.run()
+    app_flask.run(host='0.0.0.0')
