@@ -4,6 +4,8 @@ services:
     image: authz
     container_name: authz-service
     build: /home/authz/git
+    ports:
+      - 80:5000
     tty: true
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+#    volumes:
+#      - /var/run/docker.sock:/var/run/docker.sock:ro
