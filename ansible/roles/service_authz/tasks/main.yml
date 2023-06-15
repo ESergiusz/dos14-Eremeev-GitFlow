@@ -2,7 +2,7 @@
 # tasks file for service-authz
 - name: work with docker
   block:
-  - name: Clone master branch
+  - name: Clone {{ git_branch }} branch
     ansible.builtin.git:
       repo: https://github.com/ESergiusz/dos14-Eremeev-GitFlow.git
       dest: /home/authz/git
