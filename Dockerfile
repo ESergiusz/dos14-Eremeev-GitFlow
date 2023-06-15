@@ -4,7 +4,7 @@ ARG USER_NAME=authz
 ARG USER_ID=1983
 RUN useradd -d /home/$USER_NAME -U -m -u $USER_ID $USER_NAME && mkdir /home/$USER_NAME/$APP_FOLDER
 RUN pip install --upgrade pip && pip install poetry && chmod 755 /home/$USER_NAME/$APP_FOLDER
-WORKDIR /home/$USER_NAME/$APP_FOLDER
-COPY --chown=$USER_NAME:$USER_NAME . .
+WORKDIR /home/$USER_NAME/git
+COPY --chown=$USER_NAME:$USER_NAME . /home/$USER_NAME/$APP_FOLDER
 RUN poetry install
 ENTRYPOINT ["poetry","run","python","main.py"]
