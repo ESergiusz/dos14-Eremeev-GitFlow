@@ -7,5 +7,6 @@ services:
     ports:
       - 80:5000
     tty: true
-#    volumes:
-#      - /var/run/docker.sock:/var/run/docker.sock:ro
+    network_mode: host
+    volumes:
+      - $HOME:/home/authz/app
