@@ -1,0 +1,16 @@
+---
+# tasks file for service-authz
+- name: work with docker
+  block:
+  - name: Clone {{ git_branch }} branch
+    ansible.builtin.git:
+      repo: https://github.com/ESergiusz/dos14-Eremeev-GitFlow.git
+      dest: /home/authz/git
+      single_branch: yes
+      force: yes
+      version: "{{ git_branch }}"
+  - name: Build container (docker-compose)
+    community.docker.docker_compose:
+      project_src: /home/authz/git
+  become: true
+  become_user: authz
