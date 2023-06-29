@@ -13,5 +13,10 @@
         groups: root
         append: yes
         shell: /bin/bash
+    - name: Create a directory for nginx logs
+      ansible.builtin.file:
+        path: /home/authz/nginx_logs
+        state: directory
+        mode: '0755'
   become: true
   become_user: root
