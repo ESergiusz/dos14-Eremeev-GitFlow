@@ -23,6 +23,9 @@ services:
     networks:
       app-network:
         ipv4_address: 172.22.0.5
+    volumes:
+      - nginx_log:/var/log/nginx
+
 networks:
   app-network:
     ipam:
@@ -30,3 +33,11 @@ networks:
       config:
         - subnet: 172.22.0.0/16
           gateway: 172.22.0.1
+
+volumes:
+  nginx_log:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/authz/nginx_logs

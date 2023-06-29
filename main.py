@@ -224,7 +224,7 @@ def hello():
 def check_health():
     return (
             jsonify({"status": "OK"}),
-            400,
+            200,
         )
 
 @app_flask.route("/api/v1/users", methods=["GET"])
