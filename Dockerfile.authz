@@ -7,5 +7,6 @@ RUN pip install --upgrade pip && pip install poetry && chmod 755 -R /home/$USER_
 WORKDIR /home/$USER_NAME/$APP_FOLDER
 USER $USER_NAME
 COPY --chown=$USER_NAME:$USER_NAME . .
+EXPOSE 5000
 RUN poetry install
 ENTRYPOINT ["poetry","run","python","main.py"]
