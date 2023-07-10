@@ -1,3 +1,3 @@
 ---
 # defaults file for service_authz
-git_branch: develop
+git_branch: feature-hw-26

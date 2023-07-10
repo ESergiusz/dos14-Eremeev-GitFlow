@@ -218,8 +218,14 @@ def max_id():
 
 @app_flask.route("/")
 def hello():
-    return "Hello my friend. This is TMS homework."
+    return "Hello my friend. This is a omegabank's authz service."
 
+@app_flask.route("/api/v1/authz/health_check")
+def check_health():
+    return (
+            jsonify({"status": "OK"}),
+            200,
+        )
 
 @app_flask.route("/api/v1/users", methods=["GET"])
 def read_users():

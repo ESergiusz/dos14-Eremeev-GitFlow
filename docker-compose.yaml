@@ -1,13 +1,45 @@
 version: "3.4"
 services:
   authz:
-    image: authz
     container_name: authz-service
-    build: /home/authz/git
-    ports:
-      - 80:5000
+    build:
+      context: .
+      dockerfile: Dockerfile.authz
+    expose:
+      - 5000
     tty: true
+    networks:
+      app-network:
+        ipv4_address: 172.22.0.6
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - authz
+    networks:
+      app-network:
+        ipv4_address: 172.22.0.5
     volumes:
-      - Docker_Authz:/home/authz/app
+      - nginx_log:/var/log/nginx
+
+networks:
+  app-network:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.22.0.0/16
+          gateway: 172.22.0.1
+
 volumes:
-  Docker_Authz:
+  nginx_log:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /var/log/nginx_logs
