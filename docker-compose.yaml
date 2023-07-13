@@ -11,7 +11,6 @@ services:
     networks:
       app-network:
         ipv4_address: 172.22.0.6
-
   nginx:
     image: nginx:latest
     container_name: nginx
@@ -20,6 +19,7 @@ services:
       dockerfile: Dockerfile.nginx
     ports:
       - "80:80"
+    restart: always
     depends_on:
       - authz
     networks:
@@ -27,7 +27,17 @@ services:
         ipv4_address: 172.22.0.5
     volumes:
       - nginx_log:/var/log/nginx
-
+#      - ./data/certbot/conf:/etc/letsencrypt:ro
+#  certbot:
+#    container_name: certbot
+#    image: certbot/certbot:latest
+#    volumes:
+#      - ./data/certbot/conf:/etc/letsencrypt:rw
+#      - certbot_log:/var/log/letsencrypt
+#    #command: certonly --nginx --email esa.authz@smodata.net --no-eff-email --agree-tos -d esa.authz.smodata.net
+#    networks:
+#      app-network:
+#        ipv4_address: 172.22.0.7
 networks:
   app-network:
     ipam:
@@ -43,3 +53,9 @@ volumes:
       o: bind
       type: none
       device: /var/log/nginx_logs
+#  certbot_log:
+#    driver: local
+#    driver_opts:
+#      o: bind
+#      type: none
+#      device: /var/log/certbot_logs
