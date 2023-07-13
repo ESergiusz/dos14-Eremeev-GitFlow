@@ -2,12 +2,6 @@
 # Install Git
 - name: Install Apps
   block:
-  - name: Install ACL (Access control list utilities)
-    apt:
-      name:
-        - acl
-      state: latest
-      update_cache: true
   - name: Install required packages for Docker
     apt:
       pkg:
@@ -48,6 +42,12 @@
     apt:
       name:
         - docker-compose
+      state: latest
+      update_cache: true
+  - name: Install ACL (Access control list utilities)
+    apt:
+      name:
+        - acl
       state: latest
       update_cache: true
   become: true
