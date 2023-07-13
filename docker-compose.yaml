@@ -10,7 +10,7 @@ services:
     tty: true
     networks:
       app-network:
-        ipv4_address: 172.22.0.6
+        ipv4_address: 172.31.0.6
   nginx:
     image: nginx:latest
     container_name: nginx
@@ -24,7 +24,7 @@ services:
       - authz
     networks:
       app-network:
-        ipv4_address: 172.22.0.5
+        ipv4_address: 172.31.0.5
     volumes:
       - nginx_log:/var/log/nginx
 #      - ./data/certbot/conf:/etc/letsencrypt:ro
@@ -43,8 +43,8 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 172.22.0.0/16
-          gateway: 172.22.0.1
+        - subnet: 172.31.0.0/16
+          gateway: 172.31.0.1
 
 volumes:
   nginx_log:
