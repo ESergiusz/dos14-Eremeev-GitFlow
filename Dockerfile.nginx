@@ -1,6 +1,6 @@
 FROM nginx
 COPY /conf/nginx/authz_server.conf /etc/nginx/conf.d
 COPY /conf/nginx/nginx.conf /etc/nginx
-COPY /conf/sert.sh /etc/
-RUN chmod 755 /etc/setup-certbot-and-install-ssl-sertificat-script.sh
+COPY /conf/sertbot.sh /etc/
+RUN chmod 755 /etc/sertbot.sh
 # RUN /home/setup-certbot-and-install-ssl-sertificat-script.sh
