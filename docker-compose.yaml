@@ -35,7 +35,7 @@ services:
     volumes:
       - ./data/certbot/conf:/etc/letsencrypt:rw
       - ./certbot/www/:/var/www/certbot/:rw
-      - certbot_log:/var/log/letsencrypt
+#      - certbot_log:/var/log/letsencrypt
     command: certonly --webroot --webroot-path /var/www/certbot/ --email esa.authz@smodata.net --no-eff-email --agree-tos --dry-run -d esa.authz.smodata.net
     networks:
       app-network:
@@ -55,9 +55,9 @@ volumes:
       o: bind
       type: none
       device: /var/log/nginx_logs
-  certbot_log:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: /var/log/certbot_logs
+#  certbot_log:
+#    driver: local
+#    driver_opts:
+#      o: bind
+#      type: none
+#      device: /var/log/certbot_logs
