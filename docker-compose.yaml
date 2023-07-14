@@ -10,7 +10,7 @@ services:
     tty: true
     networks:
       app-network:
-        ipv4_address: 172.31.0.6
+        ipv4_address: 172.22.0.6
   nginx:
     image: nginx:latest
     container_name: nginx
@@ -24,17 +24,19 @@ services:
       - authz
     networks:
       app-network:
-        ipv4_address: 172.31.0.5
+        ipv4_address: 172.22.0.5
     volumes:
       - nginx_log:/var/log/nginx
       - ./data/certbot/conf:/etc/letsencrypt:ro
+      - ./certbot/www:/var/www/certbot/:ro
   certbot:
     container_name: certbot
     image: certbot/certbot
     volumes:
       - ./data/certbot/conf:/etc/letsencrypt:rw
+      - ./certbot/www/:/var/www/certbot/:rw
       - certbot_log:/var/log/letsencrypt
-    #command: certonly --nginx --email esa.authz@smodata.net --no-eff-email --agree-tos -d esa.authz.smodata.net
+    command: certonly --webroot --webroot-path /var/www/certbot/ --email esa.authz@smodata.net --no-eff-email --agree-tos --dry-run -d esa.authz.smodata.net
     networks:
       app-network:
         ipv4_address: 172.22.0.7
@@ -43,8 +45,8 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 172.31.0.0/16
-          gateway: 172.31.0.1
+        - subnet: 172.22.0.0/16
+          gateway: 172.22.0.1
 
 volumes:
   nginx_log:

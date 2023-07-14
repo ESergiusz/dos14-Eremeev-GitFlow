@@ -1,0 +1,2 @@
+COPY /conf/certbot.sh /etc
+CMD /etc/certbot.sh
