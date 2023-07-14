@@ -30,7 +30,7 @@ services:
       - ./data/certbot/conf:/etc/letsencrypt:ro
   certbot:
     container_name: certbot
-    image: certbot/certbot:latest
+    image: certbot/certbot
     volumes:
       - ./data/certbot/conf:/etc/letsencrypt:rw
       - certbot_log:/var/log/letsencrypt
