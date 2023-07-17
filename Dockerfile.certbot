@@ -1,2 +1,10 @@
-COPY /conf/certbot.sh /etc
-CMD /etc/certbot.sh
+FROM ubuntu:22.04
+ARG USER_NAME=certbot
+ARG USER_ID=1984
+RUN apt update
+RUN apt install certbot -y
+RUN useradd -d /home/$USER_NAME -U -m -u $USER_ID $USER_NAME && mkdir -p /etc/letsencrypt
+#RUN ln -s /snap/bin/certbot /usr/bin/certbot
+#certbot certonly --nginx --email esa.authz@smodata.net --no-eff-email --agree-tos -d esa.authz.smodata.net
+COPY /conf/certbot.sh /home/$USER_NAME
+#CMD /etc/certbot.sh

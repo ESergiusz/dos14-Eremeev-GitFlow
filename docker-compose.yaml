@@ -13,7 +13,7 @@ services:
         ipv4_address: 172.22.0.6
   nginx:
     image: nginx:latest
-    container_name: nginx
+    container_name: nginx-service
     build:
       context: .
       dockerfile: Dockerfile.nginx
@@ -27,16 +27,26 @@ services:
         ipv4_address: 172.22.0.5
     volumes:
       - nginx_log:/var/log/nginx
-      - ./data/certbot/conf:/etc/letsencrypt:ro
-      - ./certbot/www:/var/www/certbot/:ro
-  certbot:
-    container_name: certbot
-    image: certbot/certbot
+#      - ./data/certbot/conf:/etc/letsencrypt:ro
+#      - ./certbot/www:/var/www/certbot/:ro
+      - /etc/letsencrypt:/etc/letsencrypt
+      - /var/lib/letsencrypt:/var/lib/letsencrypt
+  cerbot:
+    container_name: certbot-service
+    build:
+      context: .
+      dockerfile: Dockerfile.certbot
+    expose:
+      - 80
     volumes:
-      - ./data/certbot/conf:/etc/letsencrypt:rw
-      - ./certbot/www/:/var/www/certbot/:rw
-#      - certbot_log:/var/log/letsencrypt
-    command: certonly --webroot --webroot-path /var/www/certbot/ --email esa.authz@smodata.net --no-eff-email --agree-tos --dry-run -d esa.authz.smodata.net
+#      - ./data/certbot/conf:/etc/letsencrypt:rw
+#      - ./certbot/www/:/var/www/certbot/:rw
+#      - /etc/letsencrypt:/etc/letsencrypt
+#      - /var/lib/letsencrypt:/var/lib/letsencrypt
+      - certbot_log:/var/log/letsencrypt
+#    command: certonly --webroot --webroot-path /var/ --email esa.authz@smodata.net --no-eff-email --agree-tos --dry-run -d esa.authz.smodata.net
+    depends_on:
+      - nginx
     networks:
       app-network:
         ipv4_address: 172.22.0.7
@@ -55,9 +65,9 @@ volumes:
       o: bind
       type: none
       device: /var/log/nginx_logs
-#  certbot_log:
-#    driver: local
-#    driver_opts:
-#      o: bind
-#      type: none
-#      device: /var/log/certbot_logs
+  certbot_log:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /var/log/certbot_logs

@@ -1,7 +1,9 @@
 #!/bin/bash
 SSl_authz=/etc/letsencrypt/live/esa.authz.smodata.net/fullchain.pem
 if [ -e $SSl_authz ]; then
-  certbot certonly --nginx --email esa.authz@smodata.net --no-eff-email --agree-tos -d esa.authz.smodata.net --dry-run
+  echo "Hello";
+  else
+  certbot certonly --webroot --webroot-path /var/ --email esa.authz@smodata.net --no-eff-email --agree-tos --dry-run -d esa.authz.smodata.net;
 fi
 
 #set -o nounset
@@ -50,7 +52,7 @@ fi
 #certbot-auto certonly
 
 # Set up daily cron job.
-CRON_SCRIPT="/etc/cron.daily/certbot-renew"
+#CRON_SCRIPT="/etc/cron.daily/certbot-renew"
 
 #cat > "${CRON_SCRIPT}" <<EOF
 ##!/bin/bash
