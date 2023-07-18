@@ -4,5 +4,5 @@ RUN apt install certbot -y
 RUN apt install mc -y
 EXPOSE 80
 COPY /conf/certbot/certbot.sh /etc/letsencrypt
-RUN chmod 755 /etc/letsencrypt/certbot.sh
+RUN chmod +x /etc/letsencrypt/certbot.sh
 #ENTRYPOINT ["/etc/letsencrypt/certbot.sh"]
