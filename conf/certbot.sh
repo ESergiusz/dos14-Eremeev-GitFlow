@@ -1,9 +1,18 @@
 #!/bin/bash
-SSl_authz=/etc/letsencrypt/live/esa.authz.smodata.net/fullchain.pem
-if [ -e $SSl_authz ]; then
-  echo "Hello";
+authz_cert_path=/etc/letsencrypt/live/esa.authz.smodata.net/fullchain.pem
+if [ -e $authz_cert_path ]; then
+  echo "Certificate is exist"
+  exit 0
   else
-  certbot certonly --webroot --webroot-path /var/ --email esa.authz@smodata.net --no-eff-email --agree-tos --dry-run -d esa.authz.smodata.net;
+  certbot certonly \
+    --non-interactive \
+    --agree-tos \
+    --no-eff-email \
+    --no-redirect \
+    --email esa.authz@smodata.net \
+    --agree-tos \
+    --dry-run \
+    -d esa.authz.smodata.net
 fi
 
 #set -o nounset
