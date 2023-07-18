@@ -1,12 +1,8 @@
 FROM ubuntu:22.04
-#ARG USER_NAME=certbot
-#ARG USER_ID=1984
 RUN apt update
-RUN apt install certbot python3-certbot-nginx -y
+RUN apt install certbot -y
 RUN apt install mc -y
-#&& mkdir -p /etc/letsencrypt
-#RUN useradd -d /home/$USER_NAME -U -m -u $USER_ID $USER_NAME
-COPY /conf/certbot.sh /etc/letsencrypt
-RUN chmod 755 /etc/letsencrypt/certbot.sh
 EXPOSE 80
+COPY /conf/certbot/certbot.sh /etc/letsencrypt
+RUN chmod 755 /etc/letsencrypt/certbot.sh
 #ENTRYPOINT ["/etc/letsencrypt/certbot.sh"]

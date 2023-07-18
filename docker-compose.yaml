@@ -27,13 +27,9 @@ services:
         ipv4_address: 172.22.0.5
     volumes:
       - nginx_log:/var/log/nginx
-#      - ./data/certbot/conf:/etc/letsencrypt:ro
-#      - ./certbot/www:/var/www/certbot/:ro
-      - /etc/letsencrypt:/etc/letsencrypt
-#      - /var/lib/letsencrypt:/var/lib/letsencrypt
+      - certbot_storage:/etc/letsencrypt
   certbot:
     container_name: certbot-service
-#    image: certbot/certbot
     build:
       context: .
       dockerfile: Dockerfile.certbot
@@ -41,14 +37,10 @@ services:
     expose:
       - 80
     volumes:
-#      - ./data/certbot/conf:/etc/letsencrypt:rw
-#      - ./certbot/www/:/var/www/certbot/:rw
-      - /etc/letsencrypt:/etc/letsencrypt
-#      - /var/lib/letsencrypt:/var/lib/letsencrypt
+      - certbot_storage:/etc/letsencrypt
       - certbot_log:/var/log/letsencrypt
-#    command: certbot certonly --non-interactive --agree-tos --no-eff-email --no-redirect --email esa.authz@smodata.net --agree-tos --dry-run -d esa.authz.smodata.net
-#    depends_on:
-#      - nginx
+    depends_on:
+      - nginx
     networks:
       app-network:
         ipv4_address: 172.22.0.7
@@ -73,3 +65,9 @@ volumes:
       o: bind
       type: none
       device: /var/log/certbot_logs
+  certbot_storage:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /etc/letsencrypt
