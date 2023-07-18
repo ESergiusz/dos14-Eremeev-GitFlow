@@ -5,7 +5,8 @@ if [ -e $authz_cert_path ]; then
   exit 0
   else
   certbot certonly \
-    --non-interactive \
+    --webroot \
+    --webroot-path /etc/letsencrypt \
     --agree-tos \
     --no-eff-email \
     --no-redirect \
