@@ -18,6 +18,11 @@
         path: /var/log/nginx_logs
         state: directory
         mode: '0755'
+    - name: Create a directory for certbot logs
+      ansible.builtin.file:
+        path: /var/log/certbot_logs
+        state: directory
+        mode: '0755'
 #    - name: Create a directory for certbot logs
 #      ansible.builtin.file:
 #        path: /var/log/certbot_logs

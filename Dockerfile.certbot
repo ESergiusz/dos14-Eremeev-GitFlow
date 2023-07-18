@@ -6,7 +6,7 @@ RUN apt install certbot python3-certbot-nginx -y
 RUN apt install mc -y
 #&& mkdir -p /etc/letsencrypt
 #RUN useradd -d /home/$USER_NAME -U -m -u $USER_ID $USER_NAME
-RUN chmod 755 -R /etc/letsencrypt/
 COPY /conf/certbot.sh /etc/letsencrypt
+RUN chmod 755 /etc/letsencrypt/certbot.sh
 EXPOSE 80
 #ENTRYPOINT ["/etc/letsencrypt/certbot.sh"]

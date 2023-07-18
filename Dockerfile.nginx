@@ -1,4 +1,4 @@
 FROM nginx
 COPY /conf/nginx/authz_server.conf /etc/nginx/conf.d
 COPY /conf/nginx/nginx.conf /etc/nginx
-RUN mkdir -p /etc/letsencrypt
+RUN mkdir /etc/letsencrypt
