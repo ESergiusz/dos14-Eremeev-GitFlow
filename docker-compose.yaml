@@ -35,6 +35,7 @@ services:
       context: .
       dockerfile: Dockerfile.certbot
     tty: true
+    restart: always
     expose:
       - 80
     volumes:
