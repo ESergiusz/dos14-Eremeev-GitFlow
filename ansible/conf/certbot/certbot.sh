@@ -2,7 +2,6 @@
 authz_cert_path=/etc/letsencrypt/live/esa.authz.smodata.net/fullchain.pem
 if [ -e $authz_cert_path ]; then
   echo "Certificate is exist"
-  exit 0
 else
   if certbot certonly -v \
     --webroot \
@@ -12,7 +11,6 @@ else
     --no-redirect \
     --email esa.authz@smodata.net \
     --agree-tos \
-    --dry-run \
     -d esa.authz.smodata.net; then
     echo "Certificates is create"
   else
