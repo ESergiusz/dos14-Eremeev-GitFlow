@@ -13,17 +13,14 @@ else
     --email esa.authz@smodata.net \
     --agree-tos \
     --dry-run \
-    -d esa.authz.smodata.net www.esa.authz.smodata.net; then
+    -d esa.authz.smodata.net; then
     echo "Certificates is create"
-    exit 0
   else
     echo "Something wrong"
-    exit
   fi
 fi
 # Set up daily cron job.
 CRON_SCRIPT="/etc/cron.daily/certbot-renew"
-
 cat > "${CRON_SCRIPT}" <<EOF
 #!/bin/bash
 echo "0 0,12 * * * root /opt/certbot/bin/python -c 'import random; import time; time.sleep(random.random() * 3600)' && sudo certbot renew -q" | sudo tee -a /etc/crontab > /dev/null
