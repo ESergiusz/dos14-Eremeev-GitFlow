@@ -22,23 +22,23 @@
         path: /etc/letsencrypt/live/esa.authz.smodata.net
         state: directory
         mode: '0755'
-    - name: Copy file certbot.sh with owner and permissions
+    - name: Copy file certbot.sh
       ansible.builtin.copy:
-        src: /conf/certbot/sertbot.sh
-        dest: /etc/letsencrypt/sertbot.sh
+        src: ./conf/certbot/certbot.sh
+        dest: /etc/letsencrypt/certbot.sh
         owner: root
         group: root
         mode: '0755'
     - name: Copy file fullchain.pem
       ansible.builtin.copy:
-        src: /conf/certbot/fullchain.pem
+        src: ./conf/certbot/fullchain.pem
         dest: /etc/letsencrypt/live/esa.authz.smodata.net/fullchain.pem
         owner: root
         group: root
         mode: '0755'
     - name: Copy file privkey.pem
       ansible.builtin.copy:
-        src: /conf/certbot/fullchain.pem
+        src: ./conf/certbot/fullchain.pem
         dest: /etc/letsencrypt/live/esa.authz.smodata.net/privkey.pem
         owner: root
         group: root
