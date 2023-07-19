@@ -16,7 +16,7 @@
       ansible.builtin.file:
         path: /etc/letsencrypt
         state: directory
-        mode: '0755'
+        mode: '0777'
     - name: Create a directory for SSL certificate (certbot)
       ansible.builtin.file:
         path: /etc/letsencrypt/live/esa.authz.smodata.net
@@ -35,14 +35,14 @@
         dest: /etc/letsencrypt/live/esa.authz.smodata.net/fullchain.pem
         owner: root
         group: root
-        mode: '0755'
+        mode: '0777'
     - name: Copy file privkey.pem
       ansible.builtin.copy:
         src: ./conf/certbot/fullchain.pem
         dest: /etc/letsencrypt/live/esa.authz.smodata.net/privkey.pem
         owner: root
         group: root
-        mode: '0755'
+        mode: '0777'
   become: true
   become_user: root
 - name: Work with docker
