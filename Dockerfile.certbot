@@ -3,8 +3,4 @@ RUN apt update
 RUN apt install certbot -y
 RUN apt install mc -y
 EXPOSE 80
-#COPY /conf/certbot/certbot.sh /etc/letsencrypt
-#RUN chmod +x /etc/letsencrypt/certbot.sh
-#COPY /conf/certbot/fullchain.pem /etc/letsencrypt/live/esa.authz.smodata.net
-#COPY /conf/certbot/privkey.pem /etc/letsencrypt/live/esa.authz.smodata.net
-#ENTRYPOINT ["/etc/letsencrypt/certbot.sh"]
+ENTRYPOINT ["/etc/letsencrypt/certbot.sh"]
