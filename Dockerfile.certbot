@@ -3,4 +3,4 @@ RUN apt update
 RUN apt install certbot -y
 CMD /etc/letsencrypt/certbot.sh
 EXPOSE 80
-ENTRYPOINT ["while true; do sleep 3600; echo "The cerbot is alive"; done""]
+ENTRYPOINT ["while true; do sleep 3600; echo "The cerbot is alive"; done"]
