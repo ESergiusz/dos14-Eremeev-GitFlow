@@ -23,10 +23,15 @@
         path: /var/log/certbot_logs
         state: directory
         mode: '0755'
-#    - name: Create a directory for certbot logs
-#      ansible.builtin.file:
-#        path: /var/log/certbot_logs
-#        state: directory
-#        mode: '0755'
+    - name: Create a directory for certbot storage
+      ansible.builtin.file:
+        path: /etc/letsencrypt
+        state: directory
+        mode: '0755'
+    - name: Create a directory for SSL certificate (certbot)
+      ansible.builtin.file:
+        path: /etc/letsencrypt/live/esa.authz.smodata.net
+        state: directory
+        mode: '0755'
   become: true
   become_user: root
