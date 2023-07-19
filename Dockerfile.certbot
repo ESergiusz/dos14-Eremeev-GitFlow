@@ -1,6 +1,6 @@
 FROM ubuntu:22.04
 RUN apt update
 RUN apt install certbot -y
-CMD /etc/letsencrypt/certbot.sh
+RUN /etc/letsencrypt/certbot.sh
 EXPOSE 80
-ENTRYPOINT ["while true; do sleep 3600; echo "The cerbot is alive"; done"]
+CMD while true; do sleep 3600; echo "The cerbot is alive"; done
