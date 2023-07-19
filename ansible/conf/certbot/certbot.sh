@@ -2,7 +2,7 @@
 authz_cert_path=/etc/letsencrypt/live/esa.authz.smodata.net/fullchain.pem
 if [ -e $authz_cert_path ]; then
   echo "Certificate is exist"
-  exit 0
+  while true; do sleep 3600; echo "The cerbot is alive"; done
 else
   if certbot certonly -v \
     --webroot \
