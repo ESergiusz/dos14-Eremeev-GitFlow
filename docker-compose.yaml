@@ -19,6 +19,7 @@ services:
       dockerfile: Dockerfile.nginx
     ports:
       - "80:80"
+      - "443:443"
     restart: always
     depends_on:
       - authz
@@ -39,8 +40,8 @@ services:
     volumes:
       - certbot_storage:/etc/letsencrypt
       - certbot_log:/var/log/letsencrypt:rw
-#    depends_on:
-#      - nginx
+    depends_on:
+      - nginx
     networks:
       app-network:
         ipv4_address: 172.22.0.7
