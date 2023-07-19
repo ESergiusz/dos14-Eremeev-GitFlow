@@ -29,20 +29,20 @@
         owner: root
         group: root
         mode: '0755'
-    - name: Copy file fullchain.pem
-      ansible.builtin.copy:
-        src: ./conf/certbot/fullchain.pem
-        dest: /etc/letsencrypt/live/esa.authz.smodata.net/fullchain.pem
-        owner: root
-        group: root
-        mode: '0777'
-    - name: Copy file privkey.pem
-      ansible.builtin.copy:
-        src: ./conf/certbot/fullchain.pem
-        dest: /etc/letsencrypt/live/esa.authz.smodata.net/privkey.pem
-        owner: root
-        group: root
-        mode: '0777'
+#    - name: Copy file fullchain.pem
+#      ansible.builtin.copy:
+#        src: ./conf/certbot/fullchain.pem
+#        dest: /etc/letsencrypt/live/esa.authz.smodata.net/fullchain.pem
+#        owner: root
+#        group: root
+#        mode: '0777'
+#    - name: Copy file privkey.pem
+#      ansible.builtin.copy:
+#        src: ./conf/certbot/fullchain.pem
+#        dest: /etc/letsencrypt/live/esa.authz.smodata.net/privkey.pem
+#        owner: root
+#        group: root
+#        mode: '0777'
   become: true
   become_user: root
 - name: Work with docker
