@@ -22,7 +22,6 @@ services:
     restart: always
     depends_on:
       - authz
-      - certbot
     networks:
       app-network:
         ipv4_address: 172.22.0.5
