@@ -1,6 +1,6 @@
 FROM ubuntu:22.04
 RUN apt update
 RUN apt install certbot -y
-RUN /etc/letsencrypt/certbot.sh
+CMD /etc/letsencrypt/certbot.sh
 EXPOSE 80
 #ENTRYPOINT ["/etc/letsencrypt/certbot.sh"]
