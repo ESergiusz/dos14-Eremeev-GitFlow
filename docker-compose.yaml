@@ -27,7 +27,7 @@ services:
         ipv4_address: 172.22.0.5
     volumes:
       - nginx_log:/var/log/nginx
-      - certbot_storage:/etc/letsencrypt
+      - certbot_storage:/etc/letsencrypt:rw
   certbot:
     container_name: certbot-service
     build:
@@ -38,7 +38,7 @@ services:
       - 80
     volumes:
       - certbot_storage:/etc/letsencrypt
-      - certbot_log:/var/log/letsencrypt
+      - certbot_log:/var/log/letsencrypt:rw
     depends_on:
       - nginx
     networks:
