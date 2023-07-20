@@ -8,6 +8,8 @@ services:
     expose:
       - 5000
     tty: true
+    depends_on:
+      - db
     networks:
       app-network:
         ipv4_address: 172.22.0.6
@@ -46,6 +48,18 @@ services:
     networks:
       app-network:
         ipv4_address: 172.22.0.7
+  db:
+    image: postgres:latest
+    restart: always
+    env_file:
+      - ansible/conf/db/db_login.env
+    ports:
+      - '5432:5432'
+    volumes:
+      - db_storage:/var/lib/postgresql/data
+    networks:
+      app-network:
+        ipv4_address: 172.22.0.8
 networks:
   app-network:
     ipam:
@@ -72,3 +86,9 @@ volumes:
       o: bind
       type: none
       device: /etc/letsencrypt
+  db_storage:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /etc/db_storage

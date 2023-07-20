@@ -43,6 +43,11 @@
         owner: root
         group: root
         mode: '0644'
+    - name: Create a directory for DB storage
+      ansible.builtin.file:
+        path: /etc/db_storage
+        state: directory
+        mode: '0755'
   become: true
   become_user: root
 - name: Work with docker

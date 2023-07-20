@@ -11,6 +11,7 @@ else
     --no-redirect \
     --email esa.authz@smodata.net \
     --agree-tos \
+    --dry-run \
     -d esa.authz.smodata.net; then
     echo "Certificates is create"
   else
