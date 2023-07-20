@@ -47,7 +47,7 @@
       ansible.builtin.file:
         path: /etc/PGDATA
         state: directory
-        mode: '0755'
+        mode: '0774'
     - name: Copy file db_login.env
       ansible.builtin.copy:
         src: ./conf/db/db_login.env
@@ -71,11 +71,11 @@
       project_src: /home/authz/git
   become: true
   become_user: authz
-#- name: Create folders and copy files
-#  block:
-#  - name: Delete db_login.env
-#    ansible.builtin.file:
-#      path: /etc/PGDATA/db_login.env
-#      state: absent
-#  become: true
-#  become_user: root
+- name: Delete file
+  block:
+  - name: Delete db_login.env
+    ansible.builtin.file:
+      path: /etc/PGDATA/db_login.env
+      state: absent
+  become: true
+  become_user: root
