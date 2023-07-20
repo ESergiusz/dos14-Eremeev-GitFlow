@@ -75,7 +75,7 @@
 #  block:
 #  - name: Delete db_login.env
 #    ansible.builtin.file:
-#      path: /etc/db_storage/db_login.env
+#      path: /etc/PGDATA/db_login.env
 #      state: absent
 #  become: true
 #  become_user: root
