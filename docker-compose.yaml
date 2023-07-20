@@ -54,7 +54,7 @@ services:
     env_file:
       - /etc/PGDATA/db_login.env
     ports:
-      - '5432:5432'
+      - "5432:5432"
     volumes:
       - PGDATA:/var/lib/postgresql/data
     networks:
