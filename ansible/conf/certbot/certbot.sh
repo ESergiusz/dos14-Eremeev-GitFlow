@@ -2,7 +2,6 @@
 authz_cert_path=/etc/letsencrypt/live/esa.authz.smodata.net/fullchain.pem
 if [ -e $authz_cert_path ]; then
   echo "Certificate is exist"
-  while true; do sleep 3600; echo "The cerbot is not stopped"; done
 else
   if certbot certonly -v \
     --webroot \
@@ -25,3 +24,4 @@ cat > "${CRON_SCRIPT}" <<EOF
 echo "0 0,12 * * * root /opt/certbot/bin/python -c 'import random; import time; time.sleep(random.random() * 3600)' && sudo certbot renew -q" | sudo tee -a /etc/crontab > /dev/null
 EOF
 chmod a+x "${CRON_SCRIPT}"
+while true; do sleep 3600; echo "The cerbot is not stopped"; done
