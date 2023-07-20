@@ -48,6 +48,13 @@
         path: /etc/db_storage
         state: directory
         mode: '0755'
+    - name: Copy file db_login.env
+      ansible.builtin.copy:
+        src: ./conf/db/db_login.env
+        dest: /etc/db_storage/db_login.env
+        owner: root
+        group: root
+        mode: '0644'
   become: true
   become_user: root
 - name: Work with docker
@@ -64,3 +71,11 @@
       project_src: /home/authz/git
   become: true
   become_user: authz
+#- name: Create folders and copy files
+#  block:
+#  - name: Delete db_login.env
+#    ansible.builtin.file:
+#      path: /etc/db_storage/db_login.env
+#      state: absent
+#  become: true
+#  become_user: root
