@@ -52,11 +52,11 @@ services:
     image: postgres:latest
     restart: always
     env_file:
-      - /etc/db_storage/db_login.env
+      - /etc/PGDATA/db_login.env
     ports:
       - '5432:5432'
     volumes:
-      - db_storage:/var/lib/postgresql/data
+      - PGDATA:/var/lib/postgresql/data
     networks:
       app-network:
         ipv4_address: 172.22.0.8
@@ -86,7 +86,7 @@ volumes:
       o: bind
       type: none
       device: /etc/letsencrypt
-  db_storage:
+  PGDATA:
     driver: local
     driver_opts:
       o: bind

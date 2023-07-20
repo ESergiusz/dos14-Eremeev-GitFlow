@@ -45,13 +45,13 @@
         mode: '0644'
     - name: Create a directory for DB storage
       ansible.builtin.file:
-        path: /etc/db_storage
+        path: /etc/PGDATA
         state: directory
         mode: '0755'
     - name: Copy file db_login.env
       ansible.builtin.copy:
         src: ./conf/db/db_login.env
-        dest: /etc/db_storage/db_login.env
+        dest: /etc/PGDATA/db_login.env
         owner: root
         group: root
         mode: '0644'
