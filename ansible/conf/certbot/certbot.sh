@@ -13,7 +13,7 @@ else
     --agree-tos \
     --dry-run \
     -d esa.authz.smodata.net; then
-    echo "Certificates is create"
+    echo "Certificate is create"
   else
     echo "Something wrong"
   fi

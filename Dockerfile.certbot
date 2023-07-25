@@ -2,4 +2,5 @@ FROM ubuntu:22.04
 RUN apt update
 RUN apt install certbot -y
 EXPOSE 80
+COPY ansible/conf/certbot/certbot.sh /etc/letsencrypt/certbot.sh
 CMD /etc/letsencrypt/certbot.sh
