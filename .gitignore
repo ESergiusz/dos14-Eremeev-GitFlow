@@ -1,3 +1,4 @@
 # Ignore coverage files
 .idea/
 venv/
+.env
