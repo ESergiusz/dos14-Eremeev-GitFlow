@@ -1,4 +1,9 @@
 #!/bin/bash
+mkdir -p /etc/letsencrypt/live/esa.authz.smodata.net
+cp /tmp/fullchain.pem /etc/letsencrypt/live/esa.authz.smodata.net/fullchain.pem
+chmod 755 /etc/letsencrypt/live/esa.authz.smodata.net/fullchain.pem
+cp /tmp/privkey.pem /etc/letsencrypt/live/esa.authz.smodata.net/privkey.pem
+chmod 755 /etc/letsencrypt/live/esa.authz.smodata.net/privkey.pem
 authz_cert_path=/etc/letsencrypt/live/esa.authz.smodata.net/fullchain.pem
 if [ -e $authz_cert_path ]; then
   echo "Certificate is exist"
@@ -11,7 +16,6 @@ else
     --no-redirect \
     --email esa.authz@smodata.net \
     --agree-tos \
-    --dry-run \
     -d esa.authz.smodata.net; then
     echo "Certificate is create"
   else

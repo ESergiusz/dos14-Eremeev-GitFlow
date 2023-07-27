@@ -2,45 +2,6 @@
 # tasks file for service-authz
 - name: Create folders and copy files
   block:
-    - name: Create a directory for nginx logs
-      ansible.builtin.file:
-        path: /var/log/nginx_logs
-        state: directory
-        mode: '0755'
-    - name: Create a directory for certbot logs
-      ansible.builtin.file:
-        path: /var/log/certbot_logs
-        state: directory
-        mode: '0755'
-    - name: Create a directory for certbot storage
-      ansible.builtin.file:
-        path: /etc/letsencrypt
-        state: directory
-        mode: '0755'
-    - name: Create a directory for SSL certificate (certbot)
-      ansible.builtin.file:
-        path: /etc/letsencrypt/live/esa.authz.smodata.net
-        state: directory
-        mode: '0755'
-    - name: Copy file fullchain.pem
-      ansible.builtin.copy:
-        src: ./conf/certbot/fullchain.pem
-        dest: /etc/letsencrypt/live/esa.authz.smodata.net/fullchain.pem
-        owner: root
-        group: root
-        mode: '0644'
-    - name: Copy file privkey.pem
-      ansible.builtin.copy:
-        src: ./conf/certbot/privkey.pem
-        dest: /etc/letsencrypt/live/esa.authz.smodata.net/privkey.pem
-        owner: root
-        group: root
-        mode: '0644'
-    - name: Create a directory for DB storage
-      ansible.builtin.file:
-        path: /etc/PGDATA
-        state: directory
-        mode: '0774'
     - name: Copy file db_login.env
       ansible.builtin.copy:
         src: ./conf/db/db_login.env

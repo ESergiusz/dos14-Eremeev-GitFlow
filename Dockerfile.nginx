@@ -1,4 +1,3 @@
 FROM nginx
-COPY ansible/conf/nginx/authz_server.conf /etc/nginx/conf.d
-COPY ansible/conf/nginx/nginx.conf /etc/nginx
-RUN mkdir /etc/letsencrypt
+COPY conf/nginx/authz_server.conf /etc/nginx/conf.d
+COPY conf/nginx/nginx.conf /etc/nginx
