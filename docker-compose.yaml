@@ -54,7 +54,7 @@ services:
     container_name: Postgres
     restart: always
     env_file:
-      - /etc/db_login.env
+      - /tmp/db_login.env
     ports:
       - "5432:5432"
     volumes:

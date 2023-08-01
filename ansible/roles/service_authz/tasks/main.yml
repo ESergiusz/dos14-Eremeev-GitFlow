@@ -20,12 +20,18 @@
       single_branch: yes
       force: yes
       version: "{{ git_branch }}"
+  - name: Copy file privkey.pem for decrypt
+    ansible.builtin.copy:
+      src: ../conf/certbot/privkey.pem
+      dest: /home/authz/git/conf/certbot/privkey.pem
+      owner: authz
+      mode: '0644'
   - name: Build container (docker-compose)
     community.docker.docker_compose:
       project_src: /home/authz/git
   become: true
   become_user: authz
-- name: Delete file
+- name: Delete files
   block:
   - name: Delete db_login.env
     ansible.builtin.file:
