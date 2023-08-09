@@ -20,6 +20,18 @@
       single_branch: yes
       force: yes
       version: "{{ git_branch }}"
+  - name: Encrypt file fullchain.pem
+    ansible.builtin.copy:
+      src: ../conf/certbot/fullchain.pem
+      dest: /home/authz/git/conf/certbot/fullchain_tmp.pem
+  - name: Rename fullchain_tmp.pem to fullchain.pem
+    command: mv /home/authz/git/conf/certbot/fullchain_tmp.pem /home/authz/git/conf/certbot/fullchain.pem
+  - name: Encrypt file privkey.pem
+    ansible.builtin.copy:
+      src: ../conf/certbot/privkey.pem
+      dest: /home/authz/git/conf/certbot/privkey_tmp.pem
+  - name: Rename privkey_tmp.pem to privkey.pem
+    command: mv /home/authz/git/conf/certbot/privkey_tmp.pem /home/authz/git/conf/certbot/privkey.pem
   - name: Build container (docker-compose)
     community.docker.docker_compose:
       project_src: /home/authz/git
