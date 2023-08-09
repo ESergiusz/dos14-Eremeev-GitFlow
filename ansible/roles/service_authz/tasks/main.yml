@@ -1,11 +1,11 @@
 ---
 # tasks file for service-authz
-- name: Copy files
+- name: Create dir and copy files
   block:
     - name: Copy file db_login.env
       ansible.builtin.copy:
         src: ../conf/db/db_login.env
-        dest: /etc/db_login.env
+        dest: /tmp/db_login.env
         owner: root
         group: root
         mode: '0644'
@@ -20,12 +20,6 @@
       single_branch: yes
       force: yes
       version: "{{ git_branch }}"
-  - name: Copy file privkey.pem for decrypt
-    ansible.builtin.copy:
-      src: ../conf/certbot/privkey.pem
-      dest: /home/authz/git/conf/certbot/privkey.pem
-      owner: authz
-      mode: '0644'
   - name: Build container (docker-compose)
     community.docker.docker_compose:
       project_src: /home/authz/git
@@ -35,7 +29,7 @@
   block:
   - name: Delete db_login.env
     ansible.builtin.file:
-      path: /etc/db_login.env
+      path: /tmp/db_login.env
       state: absent
   become: true
   become_user: root

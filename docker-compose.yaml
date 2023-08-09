@@ -43,6 +43,8 @@ services:
     restart: always
     expose:
       - 80
+    depends_on:
+      - authz
     volumes:
       - /var/authz/letsencrypt:/etc/letsencrypt
       - /var/authz/log/certbot_log:/var/log/letsencrypt

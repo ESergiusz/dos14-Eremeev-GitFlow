@@ -1,8 +1,9 @@
 FROM ubuntu:22.04
 RUN apt update
 RUN apt install certbot -y
-EXPOSE 80
 COPY conf/certbot/certbot.sh /tmp/certbot.sh
-COPY conf/certbot/privkey.pem /tmp/privkey.pem
+WORKDIR /tmp/authz
 COPY conf/certbot/fullchain.pem /tmp/fullchain.pem
+COPY conf/certbot/privkey.pem /tmp/privkey.pem
+EXPOSE 80
 CMD /tmp/certbot.sh
