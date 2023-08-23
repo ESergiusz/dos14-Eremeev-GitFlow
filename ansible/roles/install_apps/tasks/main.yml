@@ -44,6 +44,11 @@
         - docker-compose
       state: latest
       update_cache: true
+  - name: Install ACL (Access control list utilities)
+    apt:
+      name:
+        - acl
+      state: latest
+      update_cache: true
   become: true
   become_user: root
-

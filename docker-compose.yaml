@@ -8,26 +8,63 @@ services:
     expose:
       - 5000
     tty: true
+    restart: always
+    depends_on:
+      - db
     networks:
       app-network:
         ipv4_address: 172.22.0.6
-
   nginx:
     image: nginx:latest
-    container_name: nginx
+    container_name: nginx-service
     build:
       context: .
       dockerfile: Dockerfile.nginx
     ports:
       - "80:80"
+      - "443:443"
+    restart: always
+    tty: true
     depends_on:
       - authz
+      - certbot
     networks:
       app-network:
         ipv4_address: 172.22.0.5
     volumes:
-      - nginx_log:/var/log/nginx
-
+      - /var/authz/log/nginx_log:/var/log/nginx
+      - /var/authz/letsencrypt:/etc/letsencrypt/
+  certbot:
+    container_name: certbot-service
+    build:
+      context: .
+      dockerfile: Dockerfile.certbot
+    tty: true
+    restart: always
+    expose:
+      - 80
+    depends_on:
+      - authz
+    volumes:
+      - /var/authz/letsencrypt:/etc/letsencrypt
+      - /var/authz/log/certbot_log:/var/log/letsencrypt
+    networks:
+      app-network:
+        ipv4_address: 172.22.0.7
+  db:
+    image: postgres:latest
+    container_name: Postgres
+    restart: always
+    env_file:
+      - /tmp/db_login.env
+    ports:
+      - "5432:5432"
+    volumes:
+      - /var/authz/pgdata:/var/lib/postgresql/data
+      - /var/authz/log/postgres_log:/var/log/postgresql
+    networks:
+      app-network:
+        ipv4_address: 172.22.0.8
 networks:
   app-network:
     ipam:
@@ -35,11 +72,3 @@ networks:
       config:
         - subnet: 172.22.0.0/16
           gateway: 172.22.0.1
-
-volumes:
-  nginx_log:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: /var/log/nginx_logs
