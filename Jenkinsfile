@@ -22,7 +22,10 @@ pipeline {
     }
     stage('Build') {
       when {
-        branch "master"
+        anyOf {
+          branch pattern:"feature-*"
+          branch pattern: "master"
+        }
       }
       steps {
         script {
