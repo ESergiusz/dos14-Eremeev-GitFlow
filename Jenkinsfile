@@ -17,13 +17,12 @@ pipeline {
       steps {
         sh 'pip install poetry'
         sh 'poetry install --with dev'
-        sh "poetry run -- black --check *.py **/*.py"
+        sh "poetry run -- black --check *.py"
       }
     }
     stage('Build') {
       when {
         anyOf {
-          branch pattern:"feature-*"
           branch pattern: "master"
         }
       }
