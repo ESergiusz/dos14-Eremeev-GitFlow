@@ -204,6 +204,7 @@ with open("app.yaml", "r", encoding="utf8") as yamlfile:
         app = App(int(app_data["client_id"]), app_data["name"], roles[app_data["role"]])
         apps.append(app)
 
+
 def max_id():
     id_list = []
     id_user = max([int(i.client_id) for i in users])
@@ -220,12 +221,14 @@ def max_id():
 def hello():
     return "Hello my friend. This is a omegabank's authz service."
 
+
 @app_flask.route("/api/v1/authz/health_check")
 def check_health():
     return (
-            jsonify({"status": "OK"}),
-            200,
-        )
+        jsonify({"status": "OK"}),
+        200,
+    )
+
 
 @app_flask.route("/api/v1/users", methods=["GET"])
 def read_users():
@@ -292,6 +295,7 @@ def read_users():
         ),
         400,
     )
+
 
 @app_flask.route("/api/v1/users/<int:client_id>", methods=["GET"])
 def read_user(client_id):
@@ -915,4 +919,4 @@ def check_permission(entity, auth_permission):
 
 
 if __name__ == "__main__":
-    app_flask.run(host='0.0.0.0')
+    app_flask.run(host="0.0.0.0")
