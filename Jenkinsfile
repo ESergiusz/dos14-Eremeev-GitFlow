@@ -23,12 +23,13 @@ pipeline {
     stage('Build') {
       when {
         anyOf {
+         branch pattern: "feature-*"
           branch pattern: "master"
         }
       }
       steps {
         script {
-          def image = docker.build "esergiusz/dos14-authz:${env.GIT_COMMIT}"
+          def image = docker.build ("esergiusz/dos14-authz:${env.GIT_COMMIT}", "-t esergiusz/dos14-authz:latest")
           docker.withRegistry('','dockerhub-esa') {
             image.push()
           }
