@@ -30,7 +30,8 @@ pipeline {
       steps {
         script {
           def image = docker.build("esergiusz/dos14-authz:${env.GIT_COMMIT}","-t esergiusz/dos14-authz:latest")
-          docker.push("AdditionalTag")
+          customImage.push()
+          customImage.push('latest')
           docker.withRegistry('','dockerhub-esa') {
             image.push()
           }
