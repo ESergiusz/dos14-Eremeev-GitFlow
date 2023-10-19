@@ -4,7 +4,7 @@ services:
     container_name: authz-service
     build:
       context: .
-      dockerfile: Dockerfile.authz
+      dockerfile: Dockerfile
     expose:
       - 5000
     tty: true
