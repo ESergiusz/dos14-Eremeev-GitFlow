@@ -32,6 +32,7 @@ pipeline {
           def image = docker.build "esergiusz/dos14-authz:${env.GIT_COMMIT}"
           docker.withRegistry('','dockerhub-esa') {
             image.push()
+            image.push('latest')
           }
         }
       }
