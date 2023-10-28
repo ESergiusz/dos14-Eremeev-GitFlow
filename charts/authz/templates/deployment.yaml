@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.labels.app }}
+    bank: {{ .Values.labels.bank }}
+    env: {{ .Values.labels.env }}
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: {{ .Values.labels.app }}
+      bank: {{ .Values.labels.bank }}
+      env: {{ .Values.labels.env }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.labels.app }}
+        bank: {{ .Values.labels.bank }}
+        env: {{ .Values.labels.env }}
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.25.2
+        ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
+        volumeMounts:
+          - name: nginx-config
+            mountPath: /etc/nginx
+      - name: {{ .Values.name }}
+        image: {{ .Values.image.name }}:{{ .Values.image.tag }}
+      volumes:
+      - configMap:
+          name: {{ .Values.name }}-nginx-config
+        name: nginx-config

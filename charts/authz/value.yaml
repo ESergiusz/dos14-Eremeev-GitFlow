@@ -1,0 +1,14 @@
+#global values
+name: authz
+labels:
+  app: authz
+  bank: ivanoff
+  env: prd
+# deployment values
+image:
+  name: esergiusz/dos14-authz
+  tag: latest
+# ingress value
+host:
+  name: ivanoff
+  domain: smodata.net
