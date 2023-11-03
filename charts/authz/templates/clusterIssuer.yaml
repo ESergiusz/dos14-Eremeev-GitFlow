@@ -1,0 +1,20 @@
+{{- $issuerName := .Values.clusterissuer.issuerName -}}
+{{- range .Values.clusterIssuers -}}
+{{- if eq $issuerName .name -}}
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: {{ .name }}
+  namespace: cert-manager
+spec:
+  acme:
+    server: {{ .server }}
+    email: {{ .email }}
+    privateKeySecretRef:
+      name: {{ .name }}-key
+    solvers:
+    - http01:
+        ingress:
+          class: nginx
+{{- end -}}
+{{- end -}}

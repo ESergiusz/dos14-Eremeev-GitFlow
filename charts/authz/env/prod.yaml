@@ -1,0 +1,34 @@
+# !!!!!!   Config PROD environment  !!!!!!!
+#
+# Config deployment.yaml
+deployment:
+  image:
+    name: esergiusz/dos14-authz
+    tag: latest
+  nginx:
+    tag: 1.25.2
+  spec:
+    replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+# Config ingress.yaml
+ingress:
+  host:
+    name: ivanoff
+    domain: smodata.net
+  annotations:
+    useregex: \"true\"
+    rewritetarget: /$1
+  ingressClassName: nginx
+  path: /authz(.*)
+# Config service.yaml
+service:
+  ports:
+    protocol: TCP
+    port: 80
+    targetPort: 80
+# Config clusterissuer.yaml
+clusterissuer:
+  issuerName: letsencrypt-prod

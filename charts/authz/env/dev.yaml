@@ -1,0 +1,34 @@
+# !!!!!!   Config DEV environment  !!!!!!!
+#
+# Config deployment.yaml
+deployment:
+  image:
+    name: esergiusz/dos14-authz
+    tag: e1f869db8b0fde2f9ba61887b18a202e82c4d409
+  nginx:
+    tag: 1.25.3
+  spec:
+    replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+# Config ingress.yaml
+ingress:
+  host:
+    name: ivanoff
+    domain: smodata.net
+  annotations:
+    useregex: \"true\"
+    rewritetarget: /$1
+  ingressClassName: nginx
+  path: /authz(.*)
+# Config service.yaml
+service:
+  ports:
+    protocol: TCP
+    port: 80
+    targetPort: 80
+# Config clusterissuer.yaml
+clusterissuer:
+  issuerName: letsencrypt-staging

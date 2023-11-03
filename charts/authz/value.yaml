@@ -1,14 +1,9 @@
-#global values
 name: authz
-labels:
-  app: authz
-  bank: ivanoff
-  env: prd
-# deployment values
-image:
-  name: esergiusz/dos14-authz
-  tag: latest
-# ingress value
-host:
-  name: ivanoff
-  domain: smodata.net
+namebank: ivanoff-bank
+clusterIssuers:
+  - name: letsencrypt-prod
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: vasya@pupkin.com
+  - name: letsencrypt-staging
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    email: vasya@pupkin.com

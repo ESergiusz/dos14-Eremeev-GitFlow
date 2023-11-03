@@ -37,15 +37,5 @@ pipeline {
         }
       }
     }
-    stage('Deploy') {
-      when {
-        anyOf {
-          branch pattern: "feature-*"
-          }
-      }
-      steps {
-        sh 'kubectl set image deployment.v1.apps/authz authz=esergiusz/dos14-authz:${env.GIT_COMMIT} -n ivanoff-bank'
-      }
-    }
   }
 }
