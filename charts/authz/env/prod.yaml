@@ -32,3 +32,6 @@ service:
 # Config clusterissuer.yaml
 clusterissuer:
   issuerName: letsencrypt-prod
+# Config serviceaccount.yaml
+serviceaccount:
+  automountServiceAccountToken: true
