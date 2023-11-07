@@ -32,3 +32,6 @@ service:
 # Config clusterissuer.yaml
 clusterissuer:
   issuerName: letsencrypt-staging
+# Config serviceaccount.yaml
+serviceaccount:
+  automountServiceAccountToken: false
