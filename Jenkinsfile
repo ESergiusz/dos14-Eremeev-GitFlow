@@ -1,39 +1,16 @@
 pipeline {
   agent any
-  stages {
-    stage('Lint') {
+    stages {
+      stage('Deploy') {
       when {
         anyOf {
-          branch pattern:"feature-*"
-          branch pattern: "fix-*"
-        }
-      }
-      agent {
-        docker {
-          image 'python:3.11.3-buster'
-          args '-u 0'
-        }
+          branch pattern: "feature-*"
+          }
       }
       steps {
-        sh 'pip install poetry'
-        sh 'poetry install --with dev'
-        sh "poetry run -- black --check *.py"
+        sh "kubectl set image deployment.v1.apps/authz authz=esergiusz/dos14-authz:e1f869db8b0fde2f9ba61887b18a202e82c4d409 -n ivanoff-bank"
       }
     }
-    stage('Build') {
-      when {
-        anyOf {
-          branch pattern: "master"
-        }
-      }
-      steps {
-        script {
-          def image = docker.build "esergiusz/dos14-authz:${env.GIT_COMMIT}"
-          docker.withRegistry('','dockerhub-esa') {
-            image.push()
-          }
-        }
-      }
     }
   }
 }
