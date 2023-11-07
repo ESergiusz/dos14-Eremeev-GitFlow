@@ -8,7 +8,7 @@ pipeline {
         }
       }
       steps {
-        withKubeConfig([credentialsId: 'kubernetes-config']) {
+        withKubeConfig([credentialsId: 'AWS-ESA']) {
           sh './kubectl get pods'
         }
       }
