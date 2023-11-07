@@ -20,6 +20,7 @@ spec:
         {{- include "labels" . | indent 8 }}
     spec:
       serviceAccountName: {{ .Values.name }}-service-account
+      automountServiceAccountToken: true
       containers:
       - name: nginx
         image: nginx:{{ .Values.deployment.nginx.tag }}
