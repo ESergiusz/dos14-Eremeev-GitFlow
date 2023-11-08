@@ -219,7 +219,7 @@ def max_id():
 
 @app_flask.route("/")
 def hello():
-    return "Hello my friend. This is a ivanoff's authz service."
+    return "Hello my friend. This is a omegabank's authz service."
 
 
 @app_flask.route("/api/v1/authz/health_check")
