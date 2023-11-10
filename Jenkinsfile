@@ -50,7 +50,7 @@ pipeline {
           sh './get_helm.sh'
           sh 'rm -rf dos14-Eremeev-GitFlow'
           sh 'git clone https://github.com/ESergiusz/dos14-Eremeev-GitFlow.git --branch develop'
-          sh 'helm upgrade --install authz-aws-prd dos14-Eremeev-GitFlow/charts/authz --set=deployment.image.tag=$GIT_COMMIT -n ivanoff-bank'
+          sh 'helm upgrade authz-aws-prd charts/authz --values charts/authz/value.yaml -f charts/authz/env/prod.yaml --set=deployment.image.tag=$GIT_COMMIT -n ivanoff-bank'
         }
       }
     }
