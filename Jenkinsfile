@@ -48,7 +48,9 @@ pipeline {
           sh 'curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3'
           sh 'chmod 700 get_helm.sh'
           sh './get_helm.sh'
-          sh 'helm get all authz-aws-prd -n ivanoff-bank'
+          sh ' mkdir ~/repo | cd ~/repo'
+          sh 'git clone https://github.com/ESergiusz/dos14-Eremeev-GitFlow.git --branch develop'
+          sh 'helm upgrade --install authz-aws-prd charts/authz --set=env.deployment.image.tag=$GIT_COMMIT -n ivanoff-bank'
         }
       }
     }
