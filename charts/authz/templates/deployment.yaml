@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.deployment.spec.replicas }}
+  selector:
+    matchLabels:
+      {{- include "labels" . | indent 6 }}
+  strategy:
+    type: {{ .Values.deployment.strategy.type }}
+    rollingUpdate:
+      maxSurge: {{ .Values.deployment.strategy.rollingUpdate.maxSurge }}
+  template:
+    metadata:
+      labels:
+        {{- include "labels" . | indent 8 }}
+    spec:
+      serviceAccountName: {{ .Values.name }}-service-account
+      automountServiceAccountToken: true
+      containers:
+      - name: nginx
+        image: nginx:{{ .Values.deployment.nginx.tag }}
+        ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
+        volumeMounts:
+          - name: nginx-config
+            mountPath: /etc/nginx
+      - name: {{ .Values.name }}
+        image: {{ .Values.deployment.image.name }}:{{ .Values.deployment.image.tag }}
+        env:
+        - name: {{ .Values.deployment.env.name_base }}
+          value: {{ .Values.deployment.env.name_base_value }}
+        - name: {{ .Values.deployment.env.username_db }}
+          valueFrom:
+            secretKeyRef:
+              key: {{ .Values.deployment.env.usernameKeyRef.username }}
+              name: {{ .Values.deployment.env.usernameKeyRef.name }}
+        - name: {{ .Values.deployment.env.password }}
+          valueFrom:
+            secretKeyRef:
+              key: {{ .Values.deployment.env.usernameKeyRef.password }}
+              name: {{ .Values.deployment.env.usernameKeyRef.name }}
+        - name: {{ .Values.deployment.env.hostname }}
+          value: {{ .Values.deployment.env.hostname_value }}
+        - name: {{ .Values.deployment.env.port_name }}
+          value: {{ .Values.deployment.env.port_value | squote }}
+        livenessProbe:
+          httpGet:
+            path: {{ .Values.deployment.probes.liveness.path }}
+            port: {{ .Values.deployment.probes.liveness.port }}
+          initialDelaySeconds: {{ .Values.deployment.probes.liveness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.deployment.probes.liveness.periodSeconds }}
+        readinessProbe:
+          httpGet:
+            path: {{ .Values.deployment.probes.readiness.path }}
+            port: {{ .Values.deployment.probes.readiness.port }}
+          initialDelaySeconds: {{ .Values.deployment.probes.readiness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.deployment.probes.readiness.periodSeconds }}
+      volumes:
+      - configMap:
+          name: {{ .Values.name }}-nginx-config
+        name: nginx-config
