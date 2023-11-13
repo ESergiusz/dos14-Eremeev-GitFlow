@@ -47,6 +47,7 @@ ingress:
     rewritetarget: /$1
   ingressClassName: nginx
   path: /authz(.*)
+  pathservice: /authz
 # Config service.yaml
 service:
   ports:

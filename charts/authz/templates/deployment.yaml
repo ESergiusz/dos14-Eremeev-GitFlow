@@ -52,13 +52,13 @@ spec:
           value: {{ .Values.deployment.env.port_value | squote }}
         livenessProbe:
           httpGet:
-            path: {{ .Values.deployment.probes.liveness.path }}
+            path: {{ .Values.ingress.host.name }}.{{ .Values.ingress.host.domain }}{{ .Values.ingress.pathservice }}{{ .Values.deployment.probes.liveness.path }}
             port: {{ .Values.deployment.probes.liveness.port }}
           initialDelaySeconds: {{ .Values.deployment.probes.liveness.initialDelay }}
           timeoutSeconds: {{ .Values.deployment.probes.liveness.timeout }}
         readinessProbe:
           httpGet:
-            path: {{ .Values.deployment.probes.readiness.path }}
+            path: {{ .Values.ingress.host.name }}.{{ .Values.ingress.host.domain }}{{ .Values.ingress.pathservice }}{{ .Values.deployment.probes.readiness.path }}
             port: {{ .Values.deployment.probes.readiness.port }}
           initialDelaySeconds: {{ .Values.deployment.probes.readiness.initialDelay }}
           timeoutSeconds: {{ .Values.deployment.probes.readiness.timeout }}
