@@ -14,7 +14,7 @@ deployment:
     rollingUpdate:
       maxSurge: 1
   env:
-    name_base: PG_DATABASE
+    name_base: PG_DB
     name_base_value: ivanoffbank
     username_db: PG_USER
     usernameKeyRef:
