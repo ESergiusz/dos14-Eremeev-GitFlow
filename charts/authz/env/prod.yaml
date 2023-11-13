@@ -43,7 +43,7 @@ ingress:
     name: ivanoff
     domain: smodata.net
   annotations:
-    useregex: "true"
+    useregex: \"true\"
     rewritetarget: /$1
   ingressClassName: nginx
   path: /authz(.*)
