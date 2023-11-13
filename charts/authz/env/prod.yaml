@@ -4,7 +4,7 @@
 deployment:
   image:
     name: esergiusz/dos14-authz
-    tag: latest
+    tag: 08752b08226e74d20bcf7e52400865d0f8d6363d
   nginx:
     tag: 1.25.2
   spec:
