@@ -4,7 +4,7 @@ pipeline {
     stage('Lint') {
       when {
         anyOf {
-          branch pattern:"feature-*"
+          branch pattern: "feature-*"
           branch pattern: "develop"
         }
       }
@@ -24,7 +24,7 @@ pipeline {
       when {
         anyOf {
           branch pattern: "master"
-          branch pattern:"develop"
+          branch pattern: "develop"
         }
       }
       steps {
@@ -40,7 +40,7 @@ pipeline {
       when {
         anyOf {
           branch pattern: "master"
-          branch pattern:"feature-*"
+          branch pattern: "develop"
         }
       }
       steps {
