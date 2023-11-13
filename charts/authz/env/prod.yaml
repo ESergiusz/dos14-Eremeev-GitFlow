@@ -20,7 +20,7 @@ deployment:
     usernameKeyRef:
       username: username
       password: password
-      name: omega-db-creds
+      name: ivanoff-db-creds
     password: PG_PASSWORD
     hostname: PG_HOST
     hostname_value: omegabank-rds-tf.cearikylb8tb.eu-west-1.rds.amazonaws.com
@@ -43,7 +43,7 @@ ingress:
     name: ivanoff
     domain: smodata.net
   annotations:
-    useregex: \"true\"
+    useregex: "true"
     rewritetarget: /$1
   ingressClassName: nginx
   path: /authz(.*)
