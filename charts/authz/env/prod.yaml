@@ -13,6 +13,30 @@ deployment:
     type: RollingUpdate
     rollingUpdate:
       maxSurge: 2
+  env:
+    name_base: PG_DATABASE
+    name_base_value: ivanoffbank
+    username_db: PG_USER
+    usernameKeyRef:
+      username: username
+      password: password
+      name: omega-db-creds
+    password: PG_PASSWORD
+    hostname: PG_HOST
+    hostname_value: omegabank-rds-tf.cearikylb8tb.eu-west-1.rds.amazonaws.com
+    port_name: PG_PORT
+    port_value: "5432"
+  probes:
+    liveness:
+      path: /api/v1/authz/health_check
+      port: 80
+      initialDelay: 30
+      timeout: 2
+    readiness:
+      path: /api/v1/authz/health_check
+      port: 80
+      initialDelay: 30
+      timeout: 2
 # Config ingress.yaml
 ingress:
   host:
