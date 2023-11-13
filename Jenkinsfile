@@ -5,7 +5,7 @@ pipeline {
       when {
         anyOf {
           branch pattern:"feature-*"
-          branch pattern: "fix-*"
+          branch pattern: "develop"
         }
       }
       agent {
@@ -24,7 +24,7 @@ pipeline {
       when {
         anyOf {
           branch pattern: "master"
-          branch pattern:"feature-*"
+          branch pattern:"develop"
         }
       }
       steps {
