@@ -1,7 +1,7 @@
 import json
 import yaml
 import sys
-import config
+#import config
 from datetime import datetime, date
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
