@@ -30,13 +30,13 @@ deployment:
     liveness:
       path: /api/v1/authz/health_check
       port: 80
-      initialDelay: 30
-      timeout: 2
+      initialDelaySeconds: 30
+      periodSeconds: 3
     readiness:
       path: /api/v1/authz/health_check
       port: 80
-      initialDelay: 30
-      timeout: 2
+      initialDelaySeconds: 30
+      periodSeconds: 3
 # Config ingress.yaml
 ingress:
   host:
