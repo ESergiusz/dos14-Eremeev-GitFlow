@@ -162,6 +162,7 @@ class User(db.Model):
     def to_dict(self):
         d = self.__dict__.copy()
         del d["_sa_instance_state"]
+        d["date_of_birth"] = self.date_of_birth.strftime("%d.%m.%Y")
         return d
 
 
